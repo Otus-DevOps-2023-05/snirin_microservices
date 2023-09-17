@@ -1,0 +1,15 @@
+---
+- name: Setup a Reddit Docker Container
+  become: yes
+  hosts: all
+  tasks:
+
+    # sudo docker run -d -p 9292:9292 snirinnn/otus-reddit:1.0
+    - name: Setup a Reddit Docker Container
+      docker_container:
+        name: reddit-container
+        image: snirinnn/otus-reddit:1.0
+        state: started
+        restart_policy: unless-stopped
+        ports:
+          - "9292:9292"

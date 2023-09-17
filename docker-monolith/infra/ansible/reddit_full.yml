@@ -1,0 +1,3 @@
+---
+- import_playbook: docker_install.yml
+- import_playbook: run_docker_reddit_container.yml

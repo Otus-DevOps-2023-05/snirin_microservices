@@ -1,0 +1,18 @@
+plugin: yc_compute
+folders:
+  - b1g4k82be6flv1pr2gdf
+filters:
+  - status == 'RUNNING'
+auth_kind: serviceaccountfile
+service_account_file: ../secrets/terraform-key.json
+hostnames:
+  - fqdn
+  -
+compose:
+  ansible_host: network_interfaces[0].primary_v4_address.one_to_one_nat.address
+
+keyed_groups:
+  - key: folder_id
+    prefix: ''
+    separator: ''
+
