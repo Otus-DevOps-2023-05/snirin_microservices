@@ -1,6 +1,82 @@
 # snirin_microservices
 snirin microservices repository
 
+ДЗ 18 docker-4
+Сделано:
+1. Запустите несколько раз (2-4)
+   `docker run --network host -d nginx`
+   Каков результат? Что выдал docker ps? Как думаете почему?
+   Ответ: запущен только один контейнер, второй не смог начать слушать по адресу 0.0.0.0:80
+```
+docker logs 78b72144cecd
+[emerg] 1#1: bind() to 0.0.0.0:80 failed (98: Address already in use)
+```
+
+2. Повторите запуски контейнеров с использованием драйверов none и host и посмотрите, как меняется список namespace-ов
+```
+sudo ip netns
+9425bce62756
+default
+```
+
+3. Узнайте как образуется базовое имя проекта. Можно ли его задать? Если можно то как?
+   Ответ: берется из названия папки проекта, можно переопределить через ключ -p (`docker-compose -p my_name up -d`)
+   или переменную окружения COMPOSE_PROJECT_NAME в файле .env
+
+4. Для задания со * cоздан файл `docker-compose.override.yml`
+
+Ошибки:
+1. Для работы сервиса комментариев в исходном docker-compose.yml добавил алиас для монго - `comment_db`
+```
+networks:
+  reddit:
+    aliases:
+      - comment_db
+```
+
+
+Для себя
+Список команд
+```
+docker run -ti --rm --network none joffotron/docker-net-tools -c ifconfig
+docker run -ti --rm --network host joffotron/docker-net-tools -c ifconfig
+docker run --network host -d nginx
+
+sudo ln -s /var/run/docker/netns /var/run/netns
+sudo ip netns 
+
+docker network create reddit --driver bridge 
+docker run -d --network=reddit --network-alias=post_db --network-alias=comment_db mongo:latest;
+docker run -d --network=reddit --network-alias=post snirinnn/post:1.0;
+docker run -d --network=reddit --network-alias=comment  snirinnn/comment:1.0;
+docker run -d --network=reddit -p 9292:9292 snirinnn/ui:1.0;
+
+docker network create back_net --subnet=10.0.2.0/24;
+docker network create front_net --subnet=10.0.1.0/24;
+
+docker kill $(docker ps -q);
+docker run -d --network=front_net -p 9292:9292 --name ui  snirinnn/ui:1.0;
+docker run -d --network=back_net --name comment  snirinnn/comment:1.0;
+docker run -d --network=back_net --name post  snirinnn/post:1.0;
+docker run -d --network=back_net --name mongo_db --network-alias=post_db --network-alias=comment_db mongo:latest;
+docker network connect front_net post;
+docker network connect front_net comment; 
+
+docker-machine ssh docker-host;
+sudo apt-get update && sudo apt-get install bridge-utils;
+docker network ls;
+ifconfig | grep br;
+brctl show br-131b597ea8fa;
+sudo iptables -nL -t nat -v;
+ps ax | grep docker-proxy;
+
+export USERNAME=snirinnn;
+docker kill $(docker ps -q); docker-compose up -d; docker-compose ps;
+
+Запускать локально
+docker kill $(docker ps -q); docker-compose -f docker-compose.override.yml up -d; docker-compose ps;
+```
+
 ДЗ 17 docker-3
 Сделано:
 - Созданы и запущены образы трех микросервисов
