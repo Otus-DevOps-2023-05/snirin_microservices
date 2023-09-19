@@ -1,0 +1,5 @@
+{
+    "service_account_key_file": "secrets/terraform-key.json",
+    "folder_id": "b1g4k82be6flv1pr2gdf",
+    "source_image_family": "ubuntu-1804-lts"
+}
