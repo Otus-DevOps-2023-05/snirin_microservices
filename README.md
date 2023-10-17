@@ -1,6 +1,48 @@
 # snirin_microservices
 snirin microservices repository
 
+ДЗ 19 gitlab-ci-1
+
+Для себя
+
+Список команд
+```
+yc compute instance create \
+  --name gitlab-ci-vm1 \
+  --zone ru-central1-a \
+  --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 \
+  --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-1804-lts,size=50 \
+  --memory 4 \
+  --ssh-key ~/.ssh/appuser.pub
+
+ansible all -i 158.160.99.113, -m ping
+ansible-playbook -i 158.160.99.113, docker_install.yml
+ansible-playbook -i 158.160.99.113, gitlab_container.yml
+ansible-playbook -i 158.160.99.113, gitlab_full.yml
+
+IP=$(yc compute instance get gitlab-ci-vm3 --format json | jq  '.network_interfaces[0].primary_v4_address.one_to_one_nat.address'); echo $IP
+INSTANCE_NAME="gitlab-ci-vm"; IP=$(yc compute instance get $INSTANCE_NAME --format json | jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address'); ssh yc-user@$IP
+```
+Начальный пароль для root в gitlab
+`cat /etc/gitlab/initial_root_password`
+
+Postgres в gitlab
+```
+gitlab-psql -d gitlabhq_production
+\dt
+select * from users;
+```
+
+Redis в gitlab
+```
+cat /etc/gitlab/gitlab.rb - настройки
+
+gitlab-redis-cli
+SCAN 0 COUNT 1000
+```
+
+
+
 ДЗ 18 docker-4
 Сделано:
 1. Запустите несколько раз (2-4)
