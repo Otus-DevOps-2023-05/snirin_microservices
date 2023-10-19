@@ -21,7 +21,23 @@ ansible-playbook -i 158.160.99.113, gitlab_container.yml
 ansible-playbook -i 158.160.99.113, gitlab_full.yml
 
 IP=$(yc compute instance get gitlab-ci-vm3 --format json | jq  '.network_interfaces[0].primary_v4_address.one_to_one_nat.address'); echo $IP
-INSTANCE_NAME="gitlab-ci-vm"; IP=$(yc compute instance get $INSTANCE_NAME --format json | jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address'); ssh yc-user@$IP
+
+INSTANCE_NAME="gitlab-ci-vm"; IP=$(yc compute instance get $INSTANCE_NAME --format json \
+| jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address'); ssh yc-user@$IP
+
+docker run -d --name gitlab-runner --restart always \
+-v /srv/gitlabrunner/config:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner:latest
+
+docker exec -it gitlab-runner gitlab-runner register \
+ --url http://<your-ip>/ \
+ --non-interactive \
+ --locked=false \
+ --name DockerRunner \
+ --executor docker \
+ --docker-image alpine:latest \
+ --registration-token <your-token> \
+ --tag-list "linux,xenial,ubuntu,docker" \
+ --run-untagged
 ```
 Начальный пароль для root в gitlab
 `cat /etc/gitlab/initial_root_password`
