@@ -1,6 +1,12 @@
 #!/bin/bash
 
-INSTANCE_NAME="gitlab-ci-vm"
+if [ -z "$1" ]
+then
+  printf "Instance name should be passed, example: \n./gitlab_full.sh gitlab-ci-vm1\n"
+  exit
+fi
+
+INSTANCE_NAME=$1;
 
 echo "Removing old instance"
 yc compute instance delete $INSTANCE_NAME
@@ -14,9 +20,10 @@ yc compute instance create \
   --memory 8 \
   --ssh-key ~/.ssh/appuser.pub
 
-IP=$(yc compute instance get $INSTANCE_NAME --format json | jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address')
+IP=$(yc compute instance get $INSTANCE_NAME --format json | jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address');
 echo $IP
-ansible all -i $IP, -m ping
+
+cd ansible
 
 while [ -z "$(ansible all -i $IP, -m ping | grep pong)" ]; do
     echo "Connecting to instance"
@@ -24,4 +31,4 @@ while [ -z "$(ansible all -i $IP, -m ping | grep pong)" ]; do
 done;
 
 echo "Launching ansible"
-ansible-playbook -i $IP, gitlab_full.yml -e instance_ip=$IP -vvv
+ansible-playbook -i $IP, gitlab_full.yml -e instance_ip=$IP -v

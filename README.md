@@ -5,6 +5,7 @@ snirin microservices repository
 
 Для себя
 http://158.160.63.226/homework/example/-/settings/ci_cd
+http://158.160.63.226/admin/runners
 
 Список команд
 ```
@@ -25,9 +26,16 @@ IP=$(yc compute instance get gitlab-ci-vm3 --format json | jq  '.network_interfa
 
 INSTANCE_NAME="gitlab-ci-vm"; IP=$(yc compute instance get $INSTANCE_NAME --format json \
 | jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address'); ssh yc-user@$IP
+```
 
+Раннеры
+```
 docker run -d --name gitlab-runner --restart always \
 -v /srv/gitlabrunner/config:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner:latest
+
+gitlab-rails runner -e production "puts Gitlab::CurrentSettings.current_application_settings.runners_registration_token"
+
+token=$(docker exec -it gitlab_web_1 gitlab-rails runner -e production "puts Gitlab::CurrentSettings.current_application_settings.runners_registration_token"); echo $token
 
 docker exec -it gitlab-runner gitlab-runner register \
  --url http://<your-ip>/ \
@@ -39,6 +47,10 @@ docker exec -it gitlab-runner gitlab-runner register \
  --registration-token <your-token> \
  --tag-list "linux,xenial,ubuntu,docker" \
  --run-untagged
+ 
+ docker exec -it gitlab-runner gitlab-runner unregister -u http://158.160.49.228 -n DockerRunner
+ 
+ docker exec -it gitlab-runner gitlab-runner register --help
 ```
 Начальный пароль для root в gitlab
 `cat /etc/gitlab/initial_root_password`
