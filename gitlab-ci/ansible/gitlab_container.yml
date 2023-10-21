@@ -3,7 +3,7 @@
   become: yes
   hosts: all
   tasks:
-    - name: Create directories if they don't exist todo
+    - name: Create directories if they don't exist
       file:
         path: "{{ item }}"
         state: directory

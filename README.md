@@ -4,6 +4,7 @@ snirin microservices repository
 ДЗ 19 gitlab-ci-1
 
 Для себя
+http://158.160.63.226/homework/example/-/settings/ci_cd
 
 Список команд
 ```
@@ -41,6 +42,7 @@ docker exec -it gitlab-runner gitlab-runner register \
 ```
 Начальный пароль для root в gitlab
 `cat /etc/gitlab/initial_root_password`
+`sudo cat /srv/gitlab/config/initial_root_password`
 
 Postgres в gitlab
 ```

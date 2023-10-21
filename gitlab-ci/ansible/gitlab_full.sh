@@ -11,7 +11,7 @@ yc compute instance create \
   --zone ru-central1-a \
   --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 \
   --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-1804-lts,size=50 \
-  --memory 4 \
+  --memory 8 \
   --ssh-key ~/.ssh/appuser.pub
 
 IP=$(yc compute instance get $INSTANCE_NAME --format json | jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address')
