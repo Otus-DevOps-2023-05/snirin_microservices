@@ -2,10 +2,18 @@
 snirin microservices repository
 
 ДЗ 19 gitlab-ci-1
+Сделано:
+1. Основное задание
+2. Два задания со * 2.7 и 10.2 - автоматическое развертывание гитлаба и раннеров через скрипт и ансибл.
+   Пример запуска `./gitlab_full.sh gitlab-ci-vm`
+
 
 Для себя
 http://158.160.63.226/homework/example/-/settings/ci_cd
 http://158.160.63.226/admin/runners
+
+gitlab-runner запускает другие докер контейнеры.
+Пример пулреквеста с настройками https://github.com/Otus-DevOps-2022-11/coolf124-vlab101_microservices/pull/4/files
 
 Список команд
 ```
@@ -22,7 +30,7 @@ ansible-playbook -i 158.160.99.113, docker_install.yml
 ansible-playbook -i 158.160.99.113, gitlab_container.yml
 ansible-playbook -i 158.160.99.113, gitlab_full.yml
 
-IP=$(yc compute instance get gitlab-ci-vm3 --format json | jq  '.network_interfaces[0].primary_v4_address.one_to_one_nat.address'); echo $IP
+IP=$(yc compute instance get gitlab-ci-vm --format json | jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address'); ssh yc-user@$IP
 
 INSTANCE_NAME="gitlab-ci-vm"; IP=$(yc compute instance get $INSTANCE_NAME --format json \
 | jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address'); ssh yc-user@$IP
@@ -70,8 +78,6 @@ cat /etc/gitlab/gitlab.rb - настройки
 gitlab-redis-cli
 SCAN 0 COUNT 1000
 ```
-
-
 
 ДЗ 18 docker-4
 Сделано:
@@ -350,3 +356,6 @@ ansible all -m ping -o
 
 cd ../terraform/; terraform destroy -auto-approve; terraform apply -auto-approve; cd ../ansible/; ansible-playbook docker_install.yml
 ```
+
+Старая страница курса
+https://otus.ru/learning/41310/
