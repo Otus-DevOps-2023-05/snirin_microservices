@@ -1,6 +1,17 @@
 # snirin_microservices
 snirin microservices repository
 
+Лекция 20
+oci - опенсоурс спецификация докера 
+containerd - аналог докера по спецификации с настройкой файервола между контейнерами
+nerdctl - тоже аналог докера
+snyk, Xray, Trivy, Sonarqube - анализ уязвимостей в образе и приложении
+docker --cap-add --cap-drop
+falco https://falco.org/about/ - собирает данные о событиях, например следит за докер контейнером (продвинутый strace)
+docker scout, docker trust, sbom
+harbor - зеркало
+syft - анализ sbom
+
 ДЗ 19 gitlab-ci-1
 Сделано:
 1. Основное задание
@@ -349,6 +360,7 @@ docker-machine rm docker-host
 yc compute instance delete docker-host
 
 sudo !!
+echo $?
 
 source venv/bin/activate
 ansible-inventory --list
