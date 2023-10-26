@@ -32,6 +32,8 @@ eval $(docker-machine env docker-host)
 docker-machine ip docker-host
 
 for i in ui post-py comment; do cd src/$i; bash docker_build.sh; cd -; done
+
+docker-compose -f docker-compose.yml up -d
 ```
 
 http://158.160.125.10:9090/graph

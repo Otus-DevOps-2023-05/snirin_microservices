@@ -1,3 +1,4 @@
+# todo
 version: '3.3'
 services:
   post_db:
@@ -9,8 +10,10 @@ services:
         aliases:
           - comment_db
   ui:
-    build: ./ui
-    image: ${USERNAME}/ui:${UI_VERSION}
+    env_file:
+      - .env
+#    build: ./ui
+    image: ${USER_NAME}/ui:${UI_VERSION}
     volumes:
       - ./ui:/app
     command: ["puma", "--debug", "-w", "2"]
@@ -18,17 +21,23 @@ services:
       - ${PORT}:${PORT}/tcp
     networks:
       - front_net
+
   post:
-    build: ./post-py
-    image: ${USERNAME}/post:${POST_VERSION}
+    env_file:
+      - .env
+#    build: ./post-py
+    image: ${USER_NAME}/post:${POST_VERSION}
     volumes:
       - ./post-py:/app
     networks:
       - back_net
       - front_net
+
   comment:
-    build: ./comment
-    image: ${USERNAME}/comment:${COMMENT_VERSION}
+    env_file:
+      - .env
+#    build: ./comment
+    image: ${USER_NAME}/comment:${COMMENT_VERSION}
     volumes:
       - ./comment:/app
     command: ["puma", "--debug", "-w", "2"]
@@ -36,12 +45,27 @@ services:
       - back_net
       - front_net
 
+  prometheus:
+    image: ${USER_NAME}/prometheus
+    ports:
+      - '9090:9090'
+    volumes:
+      - prometheus_data:/prometheus
+    command: # Передаем доп параметры в командной строке
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention=1d' # Задаем время хранения метрик в 1 день
+    networks:
+      - prometheus_net
+
 volumes:
   post_db:
   ui:
   post:
   comment:
+  prometheus_data:
 
 networks:
   back_net:
   front_net:
+  prometheus_net:
