@@ -1,6 +1,95 @@
 # snirin_microservices
 snirin microservices repository
 
+Лекция 20
+oci - опенсоурс спецификация докера 
+containerd - аналог докера по спецификации с настройкой файервола между контейнерами
+nerdctl - тоже аналог докера
+snyk, Xray, Trivy, Sonarqube - анализ уязвимостей в образе и приложении
+docker --cap-add --cap-drop
+falco https://falco.org/about/ - собирает данные о событиях, например следит за докер контейнером (продвинутый strace)
+docker scout, docker trust, sbom
+harbor - зеркало
+syft - анализ sbom
+
+ДЗ 19 gitlab-ci-1
+Сделано:
+1. Основное задание
+2. Два задания со * 2.7 и 10.2 - автоматическое развертывание гитлаба и раннеров через скрипт и ансибл.
+   Пример запуска `./gitlab_full.sh gitlab-ci-vm`
+
+
+Для себя
+http://158.160.63.226/homework/example/-/settings/ci_cd
+http://158.160.63.226/admin/runners
+
+gitlab-runner запускает другие докер контейнеры.
+Пример пулреквеста с настройками https://github.com/Otus-DevOps-2022-11/coolf124-vlab101_microservices/pull/4/files
+
+Список команд
+```
+yc compute instance create \
+  --name gitlab-ci-vm1 \
+  --zone ru-central1-a \
+  --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 \
+  --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-1804-lts,size=50 \
+  --memory 4 \
+  --ssh-key ~/.ssh/appuser.pub
+
+ansible all -i 158.160.99.113, -m ping
+ansible-playbook -i 158.160.99.113, docker_install.yml
+ansible-playbook -i 158.160.99.113, gitlab_container.yml
+ansible-playbook -i 158.160.99.113, gitlab_full.yml
+
+IP=$(yc compute instance get gitlab-ci-vm --format json | jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address'); ssh yc-user@$IP
+
+INSTANCE_NAME="gitlab-ci-vm"; IP=$(yc compute instance get $INSTANCE_NAME --format json \
+| jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address'); ssh yc-user@$IP
+```
+
+Раннеры
+```
+docker run -d --name gitlab-runner --restart always \
+-v /srv/gitlabrunner/config:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner:latest
+
+gitlab-rails runner -e production "puts Gitlab::CurrentSettings.current_application_settings.runners_registration_token"
+
+token=$(docker exec -it gitlab_web_1 gitlab-rails runner -e production "puts Gitlab::CurrentSettings.current_application_settings.runners_registration_token"); echo $token
+
+docker exec -it gitlab-runner gitlab-runner register \
+ --url http://<your-ip>/ \
+ --non-interactive \
+ --locked=false \
+ --name DockerRunner \
+ --executor docker \
+ --docker-image alpine:latest \
+ --registration-token <your-token> \
+ --tag-list "linux,xenial,ubuntu,docker" \
+ --run-untagged
+ 
+ docker exec -it gitlab-runner gitlab-runner unregister -u http://158.160.49.228 -n DockerRunner
+ 
+ docker exec -it gitlab-runner gitlab-runner register --help
+```
+Начальный пароль для root в gitlab
+`cat /etc/gitlab/initial_root_password`
+`sudo cat /srv/gitlab/config/initial_root_password`
+
+Postgres в gitlab
+```
+gitlab-psql -d gitlabhq_production
+\dt
+select * from users;
+```
+
+Redis в gitlab
+```
+cat /etc/gitlab/gitlab.rb - настройки
+
+gitlab-redis-cli
+SCAN 0 COUNT 1000
+```
+
 ДЗ 18 docker-4
 Сделано:
 1. Запустите несколько раз (2-4)
@@ -271,6 +360,7 @@ docker-machine rm docker-host
 yc compute instance delete docker-host
 
 sudo !!
+echo $?
 
 source venv/bin/activate
 ansible-inventory --list
@@ -278,3 +368,6 @@ ansible all -m ping -o
 
 cd ../terraform/; terraform destroy -auto-approve; terraform apply -auto-approve; cd ../ansible/; ansible-playbook docker_install.yml
 ```
+
+Старая страница курса
+https://otus.ru/learning/41310/

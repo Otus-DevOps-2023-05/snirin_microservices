@@ -1,0 +1,77 @@
+---
+- name: Install docker
+  become: yes
+  hosts: all
+  tasks:
+    # sudo apt-get install *
+    - name: Install prerequisite packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+
+    # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    - name: Add Docker's official GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    # sudo apt-key fingerprint 0EBFCD88
+    - name: Verify that we have the key with the fingerprint
+      apt_key:
+        id: 0EBFCD88
+        state: present
+
+    # sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable"
+    - name: Set up the stable repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+        update_cache: yes
+
+    # sudo apt-get update
+    - name: Update apt packages
+      apt:
+        update_cache: yes
+
+    # sudo apt-get install docker python3-docker docker-compose-plugin
+    - name: Install docker packages
+      apt:
+        pkg:
+          - docker-ce
+          - docker-compose-plugin
+
+    # pip install -U pip
+    - name: Pip self-update
+      pip:
+        name: pip
+        state: latest
+
+    #  pip install pip docker-compose
+    - name: Install python library for docker
+      pip:
+        name:
+          - docker-compose
+
+    # sudo groupadd docker
+    - name: Create "docker" group
+      group:
+        name: "docker"
+        state: present
+
+    # sudo usermod -aG docker yc-user
+    - name: Add remote "yc-user" user to "docker" group
+      user:
+        name: "yc-user"
+        group: "docker"
+        append: yes
+
+    # sudo systemctl enable docker
+    - name: Start docker on boot
+      systemd:
+        name: docker
+        state: started
+        enabled: yes

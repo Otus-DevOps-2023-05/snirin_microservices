@@ -1,0 +1,39 @@
+---
+- name: Launch gitlab runner
+  become: yes
+  hosts: all
+  tasks:
+    - name: Run a gitlab runner docker container
+      docker_container:
+        name: gitlab-runner
+        image: gitlab/gitlab-runner:alpine-v16.5.0
+        state: started
+        restart_policy: always
+        volumes:
+          - /srv/gitlabrunner/config:/etc/gitlab-runner
+          - /var/run/docker.sock:/var/run/docker.sock
+
+    - name: Get a runner registration token
+      command: 'docker exec -it gitlab_web_1 gitlab-rails runner -e production 
+                "puts Gitlab::CurrentSettings.current_application_settings.runners_registration_token"'
+      register: token
+      until: "token is not failed"
+      retries: 10
+      delay: 10
+
+    - name: Register a runner
+      community.docker.docker_container_exec:
+        container: gitlab-runner
+        command: gitlab-runner register 
+                  --url http://{{ ansible_ssh_host }} 
+                  --non-interactive --locked=false 
+                  --name DockerRunner 
+                  --executor docker 
+                  --docker-image alpine:latest 
+                  --registration-token {{ token.stdout }} 
+                  --tag-list "linux,xenial,ubuntu,docker" 
+                  --run-untagged
+      register: result
+      until: "result is not failed"
+      retries: 10
+      delay: 10

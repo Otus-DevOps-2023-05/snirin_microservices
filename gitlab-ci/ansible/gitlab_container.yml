@@ -1,0 +1,24 @@
+---
+- name: Install gitlab ci
+  become: yes
+  hosts: all
+  tasks:
+    - name: Create directories if they don't exist
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - /srv/gitlab/config
+        - /srv/gitlab/data
+        - /srv/gitlab/logs
+
+    - name: Copy docker-compose.yml with proper instance_ip variable
+      template:
+        src: ../docker-compose.yml
+        dest: /srv/gitlab/docker-compose.yml
+
+    - name: Deploy Docker Compose stack
+      community.docker.docker_compose:
+        project_src: /srv/gitlab
+        files:
+          - docker-compose.yml
