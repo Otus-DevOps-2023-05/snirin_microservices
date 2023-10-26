@@ -1,6 +1,42 @@
 # snirin_microservices
 snirin microservices repository
 
+ДЗ monitoring-1
+todo В конце занятия нужно будет запушить на DockerHub собранные вами на этом занятии образы.
+
+Список команд
+```
+yc compute instance create \
+ --name docker-host \
+ --zone ru-central1-a \
+ --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 \
+ --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-1804-lts,size=15 \
+ --ssh-key ~/.ssh/appuser.pub
+ 
+
+INSTANCE_NAME="docker-host"; IP=$(yc compute instance get $INSTANCE_NAME --format json \
+| jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address'); ssh yc-user@$IP
+
+INSTANCE_NAME="docker-host"; IP=$(yc compute instance get $INSTANCE_NAME --format json \
+| jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address'); \
+echo $IP; \
+docker-machine create \
+ --driver generic \
+ --generic-ip-address=$IP \
+ --generic-ssh-user yc-user \
+ --generic-ssh-key ~/.ssh/appuser \
+ docker-host
+ 
+eval $(docker-machine env docker-host)
+
+docker-machine ip docker-host
+
+for i in ui post-py comment; do cd src/$i; bash docker_build.sh; cd -; done
+```
+
+http://158.160.125.10:9090/graph
+
+
 Лекция 20
 oci - опенсоурс спецификация докера 
 containerd - аналог докера по спецификации с настройкой файервола между контейнерами
