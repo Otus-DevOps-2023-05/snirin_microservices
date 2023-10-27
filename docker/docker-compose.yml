@@ -1,5 +1,6 @@
 version: '3.3'
 services:
+
   post_db:
     image: mongo:${MONGO_VERSION}
     volumes:
@@ -8,33 +9,34 @@ services:
       back_net:
         aliases:
           - comment_db
+
   ui:
     env_file:
       - .env
-#    build: ./ui
     image: ${USER_NAME}/ui:${UI_VERSION}
     ports:
       - ${PORT}:${PORT}/tcp
     networks:
       - front_net
+      - prometheus_net
 
   post:
     env_file:
       - .env
-#    build: ./post-py
     image: ${USER_NAME}/post:${POST_VERSION}
     networks:
       - back_net
       - front_net
+      - prometheus_net
 
   comment:
     env_file:
       - .env
-#    build: ./comment
     image: ${USER_NAME}/comment:${COMMENT_VERSION}
     networks:
       - back_net
       - front_net
+      - prometheus_net
 
   prometheus:
     image: ${USER_NAME}/prometheus
@@ -47,6 +49,32 @@ services:
       - '--storage.tsdb.path=/prometheus'
       - '--storage.tsdb.retention=1d' # Задаем время хранения метрик в 1 день
     networks:
+      - prometheus_net
+
+  node-exporter:
+    image: prom/node-exporter:v0.15.2
+    user: root
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+    networks:
+      - prometheus_net
+
+  mongodb_exporter:
+    image: percona/mongodb_exporter:0.39
+    command:
+      - '--mongodb.uri=mongodb://post_db:27017'
+      - '--mongodb.collstats-colls=users_post.posts,comments.comments'
+      - '--log.level=debug'
+      - '--collector.collstats'
+#      - '--collect-all'
+    networks:
+      - back_net
       - prometheus_net
 
 volumes:

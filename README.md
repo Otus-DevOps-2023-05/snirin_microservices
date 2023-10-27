@@ -2,7 +2,14 @@
 snirin microservices repository
 
 ДЗ monitoring-1
-todo В конце занятия нужно будет запушить на DockerHub собранные вами на этом занятии образы.
+Сделано:
+1. Основное задание
+   Докер хаб - https://hub.docker.com/u/snirinnn
+
+https://github.com/percona/mongodb_exporter
+
+Настройки монго экспортера
+https://github.com/percona/mongodb_exporter/issues/621#issuecomment-1434669129
 
 Список команд
 ```
@@ -14,8 +21,7 @@ yc compute instance create \
  --ssh-key ~/.ssh/appuser.pub
  
 
-INSTANCE_NAME="docker-host"; IP=$(yc compute instance get $INSTANCE_NAME --format json \
-| jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address'); ssh yc-user@$IP
+INSTANCE_NAME="docker-host"; IP=$(yc compute instance get $INSTANCE_NAME --format json | jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address'); ssh yc-user@$IP
 
 INSTANCE_NAME="docker-host"; IP=$(yc compute instance get $INSTANCE_NAME --format json \
 | jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address'); \
@@ -34,6 +40,41 @@ docker-machine ip docker-host
 for i in ui post-py comment; do cd src/$i; bash docker_build.sh; cd -; done
 
 docker-compose -f docker-compose.yml up -d
+
+curl ui:9292/metrics
+curl comment:9292/metrics
+curl post:5000/metrics
+curl http://ui:9292/healthcheck
+curl mongodb_exporter:9216/metrics
+
+docker exec -it my_name_prometheus_1 sh
+
+docker-compose stop post
+docker-compose start post
+
+docker-compose down; docker-compose -f docker-compose.yml up -d
+
+docker-machine ssh docker-host
+yes > /dev/null
+```
+
+Проверка монго-экспортера из контейнера post-py
+```
+apk add curl;
+curl mongodb_exporter:9216/metrics;
+```
+
+Подключение к монго из контейнера post-py
+```
+echo 'http://dl-cdn.alpinelinux.org/alpine/v3.6/main' >> /etc/apk/repositories;
+echo 'http://dl-cdn.alpinelinux.org/alpine/v3.6/community' >> /etc/apk/repositories;
+apk update;
+apk add mongodb=3.4.4-r0;
+mongo --version;
+mongo post_db/users_post;
+
+db.runCommand( { collStats : "posts" } )
+db.runCommand({ serverStatus: 1}).metrics.commands
 ```
 
 http://158.160.125.10:9090/graph

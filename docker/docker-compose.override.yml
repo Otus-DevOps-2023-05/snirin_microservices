@@ -1,6 +1,7 @@
 # todo
 version: '3.3'
 services:
+
   post_db:
     image: mongo:${MONGO_VERSION}
     volumes:
@@ -9,41 +10,45 @@ services:
       back_net:
         aliases:
           - comment_db
+
   ui:
     env_file:
       - .env
-#    build: ./ui
+    build: ../src/ui
     image: ${USER_NAME}/ui:${UI_VERSION}
     volumes:
-      - ./ui:/app
+      - ../src/ui:/app
     command: ["puma", "--debug", "-w", "2"]
     ports:
       - ${PORT}:${PORT}/tcp
     networks:
       - front_net
+      - prometheus_net
 
   post:
     env_file:
       - .env
-#    build: ./post-py
+    build: ../src/post-py
     image: ${USER_NAME}/post:${POST_VERSION}
-    volumes:
-      - ./post-py:/app
+#    volumes:
+#      - ../src/post-py:/app
     networks:
       - back_net
       - front_net
+      - prometheus_net
 
   comment:
     env_file:
       - .env
-#    build: ./comment
+    build: ../src/comment
     image: ${USER_NAME}/comment:${COMMENT_VERSION}
     volumes:
-      - ./comment:/app
+      - ../src/comment:/app
     command: ["puma", "--debug", "-w", "2"]
     networks:
       - back_net
       - front_net
+      - prometheus_net
 
   prometheus:
     image: ${USER_NAME}/prometheus
