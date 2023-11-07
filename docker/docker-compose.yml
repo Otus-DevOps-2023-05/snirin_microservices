@@ -77,6 +77,13 @@ services:
       - back_net
       - prometheus_net
 
+  blackbox_exporter:
+    image: prom/blackbox-exporter:v0.24.0
+    ports:
+      - '9115:9115'
+    networks:
+      - prometheus_net
+
 volumes:
   post_db:
   prometheus_data:
