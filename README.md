@@ -1,7 +1,26 @@
 # snirin_microservices
 snirin microservices repository
 
-ДЗ monitoring-1
+ДЗ 25 logging-1
+Сделано:
+1. Основное задание
+
+
+Лекция 24 Применение инструментов для обработки лог данных
+Работа с Elasticsearch и Fluentbit, Graphana, Loki
+Loki лучше Elasticsearch
+Logcli - консольный клиент к графане
+Vector.dev - аналог Fluentbit, возможно лучше
+
+Лекция 23 Мониторинг приложения и инфраструктуры
+LogAnalyser
+Язык метрик (PromQL)
+Минута 48 - функции в prometheus
+Graphana - это хорошо
+Zabbix - для сисадминов, а не для девопсов, прожорлив по ресурсам и неудобный интерфейс
+В полезных ссылках в конце презентации много книг https://cdn.otus.ru/media/public/ae/61/Мониторинг_приложения_и_инфраструктуры-224721-ae6107.pdf
+
+ДЗ 22 monitoring-1
 Сделано:
 1. Основное задание
    Докер хаб - https://hub.docker.com/u/snirinnn
@@ -11,6 +30,7 @@ snirin microservices repository
    - Blackbox exporter
    - Makefile
 
+Для себя
 mongodb_exporter
 https://github.com/percona/mongodb_exporter
 Настройки монго экспортера
