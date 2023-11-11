@@ -4,6 +4,44 @@ snirin microservices repository
 ДЗ 25 logging-1
 Сделано:
 1. Основное задание
+todo  установку пакетов gcc и musl-dev
+
+Для себя
+Список команд
+```
+export USER_NAME='snirinnn';
+cd ui && bash docker_build.sh; docker push $USER_NAME/ui:logging; cd ..;
+cd post-py && bash docker_build.sh; docker push $USER_NAME/post:logging; cd ..;
+cd comment && bash docker_build.sh; docker push $USER_NAME/comment:logging; cd ..;
+
+INSTANCE_NAME="logging"; \
+yc compute instance delete $INSTANCE_NAME;
+
+INSTANCE_NAME="logging"; \
+yc compute instance create \
+ --name $INSTANCE_NAME \
+ --zone ru-central1-a \
+ --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 \
+ --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-1804-lts,size=15 \
+ --memory 4 \
+ --ssh-key ~/.ssh/appuser.pub;
+
+INSTANCE_NAME="logging"; IP=$(yc compute instance get $INSTANCE_NAME --format json \
+| jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address'); \
+echo $IP; \
+docker-machine create \
+ --driver generic \
+ --generic-ip-address=$IP \
+ --generic-ssh-user yc-user \
+ --generic-ssh-key ~/.ssh/appuser \
+ $INSTANCE_NAME;
+ 
+INSTANCE_NAME="logging"; eval $(docker-machine env $INSTANCE_NAME);
+docker-machine ip $INSTANCE_NAME;
+
+INSTANCE_NAME="logging"; IP=$(docker-machine ip $INSTANCE_NAME); ssh yc-user@$IP;
+sudo add-apt-repository ppa:longsleep/golang-backports; sudo apt update; sudo apt install golang-go;
+```
 
 
 Лекция 24 Применение инструментов для обработки лог данных
