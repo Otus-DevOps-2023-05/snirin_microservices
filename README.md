@@ -4,7 +4,6 @@ snirin microservices repository
 ДЗ 25 logging-1
 Сделано:
 1. Основное задание
-todo  установку пакетов gcc и musl-dev
 
 Для себя
 Список команд
@@ -41,8 +40,13 @@ docker-machine ip $INSTANCE_NAME;
 
 INSTANCE_NAME="logging"; IP=$(docker-machine ip $INSTANCE_NAME); ssh yc-user@$IP;
 sudo add-apt-repository ppa:longsleep/golang-backports; sudo apt update; sudo apt install golang-go;
+
+docker-compose -f docker-compose.yml up -d
 ```
 
+Ошибки
+1. Не удавалось собрать образ fluentd
+Поправилось изменением версий и добавлением флага `--user-install`
 
 Лекция 24 Применение инструментов для обработки лог данных
 Работа с Elasticsearch и Fluentbit, Graphana, Loki

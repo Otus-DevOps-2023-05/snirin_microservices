@@ -1,13 +1,13 @@
 version: '3'
 services:
   fluentd:
-    image: ${USERNAME}/fluentd
+    image: ${USER_NAME}/fluentd
     ports:
       - "24224:24224"
       - "24224:24224/udp"
 
   elasticsearch:
-    image: elasticsearch:7.4.0
+    image: elasticsearch:8.11.0
     environment:
       - ELASTIC_CLUSTER=false
       - CLUSTER_NODE_MASTER=true
@@ -19,6 +19,6 @@ services:
       - "9200:9200"
 
   kibana:
-    image: kibana:7.4.0
+    image: kibana:8.11.0
     ports:
       - "5601:5601"
