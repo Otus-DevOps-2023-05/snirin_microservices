@@ -14,6 +14,11 @@ services:
     env_file:
       - .env
     image: ${USER_NAME}/ui:${UI_VERSION}
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: service.ui
     ports:
       - ${PORT}:${PORT}/tcp
     networks:

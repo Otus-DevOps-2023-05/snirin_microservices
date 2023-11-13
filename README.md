@@ -41,12 +41,16 @@ docker-machine ip $INSTANCE_NAME;
 INSTANCE_NAME="logging"; IP=$(docker-machine ip $INSTANCE_NAME); ssh yc-user@$IP;
 sudo add-apt-repository ppa:longsleep/golang-backports; sudo apt update; sudo apt install golang-go;
 
-docker-compose -f docker-compose.yml up -d
+docker-compose down;
+docker-compose -f docker-compose.yml up -d;
+docker-compose -f docker-compose-logging.yml down;
+docker-compose -f docker-compose-logging.yml up -d;
 ```
 
 Ошибки
 1. Не удавалось собрать образ fluentd
-Поправилось изменением версий и добавлением флага `--user-install`
+Поправилось изменением файла fluentd/Dockerfile, взятым из
+https://github.com/Otus-DevOps-2022-05/Sun8877777_microservices/blob/main/logging/fluentd/Dockerfile 
 
 Лекция 24 Применение инструментов для обработки лог данных
 Работа с Elasticsearch и Fluentbit, Graphana, Loki
