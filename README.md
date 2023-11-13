@@ -4,8 +4,13 @@ snirin microservices repository
 ДЗ 25 logging-1
 Сделано:
 1. Основное задание
+2. Задания со *
+   - 8.3. Разбор ещё одного формата логов
 
 Для себя
+grokdebugger
+http://158.160.102.176:5601/app/kibana#/dev_tools/grokdebugger?_g=()
+
 Список команд
 ```
 export USER_NAME='snirinnn';
