@@ -45,6 +45,8 @@ docker-compose down;
 docker-compose -f docker-compose.yml up -d;
 docker-compose -f docker-compose-logging.yml down;
 docker-compose -f docker-compose-logging.yml up -d;
+
+docker build -t $USER_NAME/fluentd ../logging/fluentd; docker-compose -f docker-compose-logging.yml up -d; docker logs my_name_fluentd_1
 ```
 
 Ошибки
