@@ -13,6 +13,8 @@ services:
   ui:
     env_file:
       - .env
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     image: ${USER_NAME}/ui:${UI_VERSION}
     logging:
       driver: "fluentd"
@@ -28,6 +30,8 @@ services:
   post:
     env_file:
       - .env
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     image: ${USER_NAME}/post:${POST_VERSION}
     logging:
       driver: "fluentd"
@@ -42,6 +46,8 @@ services:
   comment:
     env_file:
       - .env
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     image: ${USER_NAME}/comment:${COMMENT_VERSION}
     networks:
       - back_net
