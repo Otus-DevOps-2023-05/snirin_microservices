@@ -1,6 +1,35 @@
 # snirin_microservices
 snirin microservices repository
 
+ДЗ 27 Введение в Kubernetes #1
+
+
+Список команд
+```
+INSTANCE_NAME="kubenode1"; \
+yc compute instance delete $INSTANCE_NAME;
+yc compute instance create \
+ --name $INSTANCE_NAME \
+ --zone ru-central1-a \
+ --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 \
+ --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-1804-lts,size=15 \
+ --memory 8 \
+ --ssh-key ~/.ssh/appuser.pub;
+ 
+INSTANCE_NAME="kubenode1"; 
+IP=$(yc compute instance get $INSTANCE_NAME --format json | jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address');
+echo $IP;
+kubeadm init --apiserver-cert-extra-sans=$IP --apiserver-advertiseaddress=0.0.0.0 --control-plane-endpoint=$IP --pod-network-cidr=10.244.0.0/16
+```
+
+Лекция 27 Введение в Kubernetes #1
+Pod - группа контейнеров
+Node - машина
+Один Pod - один IP
+
+Лекция 26 Контейнерная оркестрация
+Docker swarm, Hashicorp Nomad, Apache Mesos, k8s
+
 ДЗ 25 logging-1
 Сделано:
 1. Основное задание
