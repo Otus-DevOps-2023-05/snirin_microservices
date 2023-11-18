@@ -3,6 +3,16 @@ snirin microservices repository
 
 ДЗ 27 Введение в Kubernetes #1
 
+Для себя
+Чужие примеры
+https://github.com/Otus-DevOps-2022-11/coolf124-vlab101_microservices/pull/8/files
+https://github.com/Otus-DevOps-2022-05/Sun8877777_microservices/pull/8/files
+
+Как создать кластер Kubernetes с помощью Kubeadm в Ubuntu 16.04
+https://www.digitalocean.com/community/tutorials/how-to-create-a-kubernetes-cluster-using-kubeadm-on-ubuntu-16-04-ru
+
+Как установить Kubernetes на сервер Ubuntu без Docker
+https://habr.com/ru/articles/542042/
 
 Список команд
 ```
@@ -19,7 +29,23 @@ yc compute instance create \
 INSTANCE_NAME="kubenode1"; 
 IP=$(yc compute instance get $INSTANCE_NAME --format json | jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address');
 echo $IP;
-kubeadm init --apiserver-cert-extra-sans=$IP --apiserver-advertiseaddress=0.0.0.0 --control-plane-endpoint=$IP --pod-network-cidr=10.244.0.0/16
+kubeadm init --apiserver-cert-extra-sans=$IP --apiserver-advertise-address=0.0.0.0 --control-plane-endpoint=$IP --pod-network-cidr=10.244.0.0/16
+
+systemctl status kubelet
+journalctl -xe
+sudo swapoff -a
+cat /proc/swaps
+free -h
+sudo systemctl restart kubelet
+
+
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg;
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg;
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list;
+sudo apt-get update;
+sudo apt-get install -y kubelet kubeadm kubectl;
+sudo apt-mark hold kubelet kubeadm kubectl;
+
 ```
 
 Лекция 27 Введение в Kubernetes #1
