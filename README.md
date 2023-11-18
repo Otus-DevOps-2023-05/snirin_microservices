@@ -1,7 +1,97 @@
 # snirin_microservices
 snirin microservices repository
 
-ДЗ monitoring-1
+ДЗ 25 logging-1
+Сделано:
+1. Основное задание
+2. Задания со *
+   - 8.3. Разбор ещё одного формата логов
+   - 9.6. Траблшутинг UI-экспириенса
+       Zipkin показывает, что при получении поста 3 секунды уходит на вызов сервиса `post`.
+       Причиной этого является задержка `time.sleep(3)` в файле `post_app.py` 
+
+Для себя
+grokdebugger
+http://158.160.102.176:5601/app/kibana#/dev_tools/grokdebugger?_g=()
+
+Список команд
+```
+export USER_NAME='snirinnn';
+cd ../src;
+cd ui && bash docker_build.sh; docker push $USER_NAME/ui:logging; cd ..;
+cd post-py && bash docker_build.sh; docker push $USER_NAME/post:logging; cd ..;
+cd comment && bash docker_build.sh; docker push $USER_NAME/comment:logging; cd ..;
+cd ../docker;
+
+docker build -t $USER_NAME/fluentd ../logging/fluentd;
+
+INSTANCE_NAME="logging"; \
+yc compute instance delete $INSTANCE_NAME;
+
+INSTANCE_NAME="logging"; \
+yc compute instance create \
+ --name $INSTANCE_NAME \
+ --zone ru-central1-a \
+ --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 \
+ --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-1804-lts,size=15 \
+ --memory 8 \
+ --ssh-key ~/.ssh/appuser.pub;
+
+INSTANCE_NAME="logging"; 
+docker-machine rm $INSTANCE_NAME;
+IP=$(yc compute instance get $INSTANCE_NAME --format json \
+| jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address'); \
+echo $IP; \
+docker-machine create \
+ --driver generic \
+ --generic-ip-address=$IP \
+ --generic-ssh-user yc-user \
+ --generic-ssh-key ~/.ssh/appuser \
+ $INSTANCE_NAME;
+ 
+INSTANCE_NAME="logging"; eval $(docker-machine env $INSTANCE_NAME);
+docker-machine ip $INSTANCE_NAME;
+
+INSTANCE_NAME="logging"; IP=$(docker-machine ip $INSTANCE_NAME); ssh yc-user@$IP;
+
+docker-compose -f docker-compose-logging.yml -f docker-compose.yml down; 
+docker-compose -f docker-compose-logging.yml -f docker-compose.yml up -d;
+
+docker build -t $USER_NAME/fluentd ../logging/fluentd; docker-compose -f docker-compose-logging.yml up -d; sleep 3; docker logs my_name_fluentd_1
+```
+
+Ошибки
+1. Не удавалось собрать образ fluentd
+Поправилось изменением файла fluentd/Dockerfile, взятым из
+https://github.com/Otus-DevOps-2022-05/Sun8877777_microservices/blob/main/logging/fluentd/Dockerfile 
+
+
+Лекция 25 Применение системы логирования в инфраструктуре на основе Docker
+К докер-демону можно подключать внешние драйвера
+Можно писать логи в облака гугл и амазон.
+Чтобы nginx писал в stderr, stdout создаются мягкие ссылки
+`ln -sf /dev/stdout /var/log/nginx/access.log`
+`ln -sf /dev/stderr /var/log/nginx/error.log`
+Очистка всего неиспольуемого докер-машиной
+`docker system prune`
+ncdu
+`du -h`
+
+Лекция 24 Применение инструментов для обработки лог данных
+Работа с Elasticsearch и Fluentbit, Graphana, Loki
+Loki лучше Elasticsearch
+Logcli - консольный клиент к графане
+Vector.dev - аналог Fluentbit, возможно лучше
+
+Лекция 23 Мониторинг приложения и инфраструктуры
+LogAnalyser
+Язык метрик (PromQL)
+Минута 48 - функции в prometheus
+Graphana - это хорошо
+Zabbix - для сисадминов, а не для девопсов, прожорлив по ресурсам и неудобный интерфейс
+В полезных ссылках в конце презентации много книг https://cdn.otus.ru/media/public/ae/61/Мониторинг_приложения_и_инфраструктуры-224721-ae6107.pdf
+
+ДЗ 22 monitoring-1
 Сделано:
 1. Основное задание
    Докер хаб - https://hub.docker.com/u/snirinnn
@@ -11,6 +101,7 @@ snirin microservices repository
    - Blackbox exporter
    - Makefile
 
+Для себя
 mongodb_exporter
 https://github.com/percona/mongodb_exporter
 Настройки монго экспортера

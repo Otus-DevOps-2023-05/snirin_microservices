@@ -13,7 +13,14 @@ services:
   ui:
     env_file:
       - .env
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     image: ${USER_NAME}/ui:${UI_VERSION}
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: service.ui
     ports:
       - ${PORT}:${PORT}/tcp
     networks:
@@ -23,7 +30,14 @@ services:
   post:
     env_file:
       - .env
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     image: ${USER_NAME}/post:${POST_VERSION}
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: service.post
     networks:
       - back_net
       - front_net
@@ -32,6 +46,8 @@ services:
   comment:
     env_file:
       - .env
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     image: ${USER_NAME}/comment:${COMMENT_VERSION}
     networks:
       - back_net
