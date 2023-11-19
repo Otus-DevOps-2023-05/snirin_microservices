@@ -14,6 +14,9 @@ https://www.digitalocean.com/community/tutorials/how-to-create-a-kubernetes-clus
 Как установить Kubernetes на сервер Ubuntu без Docker
 https://habr.com/ru/articles/542042/
 
+Install Kubernetes Cluster with Ansible on Ubuntu in 5 minutes
+https://www.linuxsysadmins.com/install-kubernetes-cluster-with-ansible/
+
 How to use Ansible’s lineinfile module in a bulletproof way
 https://medium.com/@relativkreativ/how-to-use-ansibles-lineinfile-module-in-a-bulletproof-way-e2c75e0aa6bb
 ```
@@ -61,24 +64,28 @@ sudo apt-get update;
 sudo apt-get install -y kubelet kubeadm kubectl;
 sudo apt-mark hold kubelet kubeadm kubectl;
 
-export IP=158.160.127.180;
+export IP=51.250.15.4;
 sudo apt-get update;
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add;
 sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main";
-sudo apt-get install -y containerd kubeadm kubelet kubectl;
+sudo apt-get -y install containerd kubelet=1.28.0-00 kubeadm=1.28.0-00 kubectl=1.28.0-00;
+sudo apt-mark hold kubelet kubeadm kubectl;
+sudo kubeadm config images pull --kubernetes-version v1.28.0
 sudo bash -c 'echo "net.bridge.bridge-nf-call-iptables = 1" >> /etc/sysctl.conf';
 sudo bash -c 'echo '1' > /proc/sys/net/ipv4/ip_forward';
 sudo sysctl --system;
 sudo modprobe overlay;
 sudo modprobe br_netfilter;
-sudo kubeadm config images pull;
 echo $IP;
 sudo kubeadm init --apiserver-cert-extra-sans=$IP --apiserver-advertise-address=0.0.0.0 --control-plane-endpoint=$IP --pod-network-cidr=10.244.0.0/16
 mkdir -p $HOME/.kube;
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config;
 sudo chown $(id -u):$(id -g) $HOME/.kube/config;
-kubectl get nodes;
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.4/manifests/calico.yaml;
 
+ansible all -i ./inventory.sh -m ping
+ansible all -m ping
+ansible-playbook -i ./inventory.sh kube-dependencies.yml
 ```
 
 Лекция 27 Введение в Kubernetes #1
@@ -643,3 +650,10 @@ cd ../terraform/; terraform destroy -auto-approve; terraform apply -auto-approve
 
 Старая страница курса
 https://otus.ru/learning/41310/
+
+Полезные ссылки
+Собеседование Senior DevOps Engineer: вопросы
+https://habr.com/ru/articles/733158/
+
+devops-exercises
+https://github.com/bregman-arie/devops-exercises
