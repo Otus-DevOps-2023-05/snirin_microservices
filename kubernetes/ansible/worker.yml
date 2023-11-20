@@ -1,0 +1,21 @@
+- hosts: master
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: Get join command
+      shell: kubeadm token create --print-join-command
+      register: join_command_raw
+
+    - name: "Add K8S Token and Hash to dummy host"
+      add_host:
+        name:   "K8S_TOKEN_HOLDER"
+        join_command:  "{{ join_command_raw.stdout_lines[0] }}"
+
+- hosts: worker
+  become: yes
+  tasks:
+    - name: Join node to cluster
+      shell: "{{ hostvars['K8S_TOKEN_HOLDER'].join_command }} >> node_joined.txt"
+      args:
+        chdir: $HOME
+        creates: node_joined.txt

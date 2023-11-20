@@ -1,0 +1,84 @@
+- hosts: all
+  become: yes
+  tasks:
+    - name: Install containerd
+      apt:
+        name: containerd
+        state: present
+        update_cache: true
+
+    - name: Add Kubernetes apt-key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+
+    - name: Add Kubernetes' APT repository
+      apt_repository:
+        repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+        filename: 'kubernetes'
+
+    - name: Install kubernetes packages
+      apt:
+        pkg:
+          - kubelet=1.28.0-00
+          - kubeadm=1.28.0-00
+          - kubectl=1.28.0-00
+
+    - name: Prevent kubernetes packages from being upgraded
+      dpkg_selections:
+        name: "{{ item }}"
+        selection: hold
+      loop:
+        - kubelet
+        - kubeadm
+        - kubectl
+
+    - name: Remove Swap entry from /etc/fstab
+      lineinfile:
+        dest: /etc/fstab
+        regexp: swap
+        state: absent
+      register: swap_fstab
+
+    - name: Make the Swap inactive (only when it was active)
+      command: swapoff -a
+      when: swap_fstab is changed
+
+    - name: Create an empty file for containerd module
+      copy:
+        content: ""
+        dest: /etc/modules-load.d/containerd.conf
+        force: no
+
+    - name: Configure module for containerd
+      blockinfile:
+        path: /etc/modules-load.d/containerd.conf
+        block: |
+          overlay
+          br_netfilter
+      register: modules
+
+    - name: Apply modules
+      command: /lib/systemd/systemd-modules-load
+      when: modules is changed
+
+    - name: Create an empty file for kubernetes sysctl params
+      copy:
+        content: ""
+        dest: /etc/sysctl.d/99-kubernetes-cri.conf
+        force: no
+
+    - name: Configure sysctl params for Kubernetes
+      lineinfile:
+        path: /etc/sysctl.d/99-kubernetes-cri.conf
+        line: "{{ item }}"
+      with_items:
+        - 'net.bridge.bridge-nf-call-iptables  = 1'
+        - 'net.ipv4.ip_forward                 = 1'
+        - 'net.bridge.bridge-nf-call-ip6tables = 1'
+      register: kernel_parameters
+
+    - name: Apply sysctl params
+      command: sysctl --system
+      when: kernel_parameters is changed

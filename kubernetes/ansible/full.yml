@@ -1,0 +1,4 @@
+---
+- import_playbook: kube-dependencies.yml
+- import_playbook: master.yml
+- import_playbook: worker.yml

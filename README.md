@@ -1,6 +1,106 @@
 # snirin_microservices
 snirin microservices repository
 
+ДЗ 27 Введение в Kubernetes #1
+1. Основное задание
+2. Задания со *
+   - Опишите установку кластера k8s с помощью terraform и ansible
+
+Для себя
+Чужие примеры
+https://github.com/Otus-DevOps-2022-11/coolf124-vlab101_microservices/pull/8/files
+https://github.com/Otus-DevOps-2022-05/Sun8877777_microservices/pull/8/files с динамик инвентори и тегированием инстансов в терраформе
+
+Как создать кластер Kubernetes с помощью Kubeadm в Ubuntu 16.04
+https://www.digitalocean.com/community/tutorials/how-to-create-a-kubernetes-cluster-using-kubeadm-on-ubuntu-16-04-ru
+
+Как установить Kubernetes на сервер Ubuntu без Docker
+https://habr.com/ru/articles/542042/
+
+Install Kubernetes Cluster with Ansible on Ubuntu in 5 minutes
+https://www.linuxsysadmins.com/install-kubernetes-cluster-with-ansible/
+
+How to use Ansible’s lineinfile module in a bulletproof way
+https://medium.com/@relativkreativ/how-to-use-ansibles-lineinfile-module-in-a-bulletproof-way-e2c75e0aa6bb
+```
+- name: Listen on 1.2.3.4
+  lineinfile: dest=/etc/ssh/sshd_config
+              line="ListenAddress 1.2.3.4"
+              state=present
+
+- name: Listen on 1.2.3.4
+  lineinfile: dest=/etc/ssh/sshd_config
+              line="ListenAddress 1.2.3.4"
+              insertafter="^#?AddressFamily"
+```
+
+
+Список команд
+```
+INSTANCE_NAME="kubenode1"; \
+yc compute instance delete $INSTANCE_NAME;
+yc compute instance create \
+ --name $INSTANCE_NAME \
+ --zone ru-central1-a \
+ --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 \
+ --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-1804-lts,size=15 \
+ --memory 8 \
+ --ssh-key ~/.ssh/appuser.pub;
+ 
+INSTANCE_NAME="kubenode1"; 
+IP=$(yc compute instance get $INSTANCE_NAME --format json | jq -r '.network_interfaces[0].primary_v4_address.one_to_one_nat.address');
+echo $IP;
+kubeadm init --apiserver-cert-extra-sans=$IP --apiserver-advertise-address=0.0.0.0 --control-plane-endpoint=$IP --pod-network-cidr=10.244.0.0/16
+
+systemctl status kubelet
+journalctl -xe
+sudo swapoff -a
+cat /proc/swaps
+free -h
+sudo systemctl restart kubelet
+
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg;
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg;
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list;
+sudo apt-get update;
+sudo apt-get install -y kubelet kubeadm kubectl;
+sudo apt-mark hold kubelet kubeadm kubectl;
+
+export IP=51.250.15.4;
+sudo apt-get update;
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add;
+sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main";
+sudo apt-get -y install containerd kubelet=1.28.0-00 kubeadm=1.28.0-00 kubectl=1.28.0-00;
+sudo apt-mark hold kubelet kubeadm kubectl;
+sudo kubeadm config images pull --kubernetes-version v1.28.0
+sudo bash -c 'echo "net.bridge.bridge-nf-call-iptables = 1" >> /etc/sysctl.conf';
+sudo bash -c 'echo '1' > /proc/sys/net/ipv4/ip_forward';
+sudo sysctl --system;
+sudo modprobe overlay;
+sudo modprobe br_netfilter;
+echo $IP;
+sudo kubeadm init --apiserver-cert-extra-sans=$IP --apiserver-advertise-address=0.0.0.0 --control-plane-endpoint=$IP --pod-network-cidr=10.244.0.0/16
+mkdir -p $HOME/.kube;
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config;
+sudo chown $(id -u):$(id -g) $HOME/.kube/config;
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.4/manifests/calico.yaml;
+kubeadm token create --print-join-command;
+
+ansible all -i ./inventory.sh -m ping
+ansible all -m ping
+ansible-playbook -i ./inventory.sh kube-dependencies.yml
+
+cd ../terraform; terraform destroy -auto-approve; terraform apply -auto-approve; cd ../ansible; sleep 30; ansible-playbook full.yml
+```
+
+Лекция 27 Введение в Kubernetes #1
+Pod - группа контейнеров
+Node - машина
+Один Pod - один IP
+
+Лекция 26 Контейнерная оркестрация
+Docker swarm, Hashicorp Nomad, Apache Mesos, k8s
+
 ДЗ 25 logging-1
 Сделано:
 1. Основное задание
@@ -555,3 +655,10 @@ cd ../terraform/; terraform destroy -auto-approve; terraform apply -auto-approve
 
 Старая страница курса
 https://otus.ru/learning/41310/
+
+Полезные ссылки
+Собеседование Senior DevOps Engineer: вопросы
+https://habr.com/ru/articles/733158/
+
+devops-exercises
+https://github.com/bregman-arie/devops-exercises
