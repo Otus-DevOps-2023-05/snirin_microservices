@@ -2,11 +2,14 @@
 snirin microservices repository
 
 ДЗ 27 Введение в Kubernetes #1
+1. Основное задание
+2. Задания со *
+   - Опишите установку кластера k8s с помощью terraform и ansible
 
 Для себя
 Чужие примеры
 https://github.com/Otus-DevOps-2022-11/coolf124-vlab101_microservices/pull/8/files
-https://github.com/Otus-DevOps-2022-05/Sun8877777_microservices/pull/8/files
+https://github.com/Otus-DevOps-2022-05/Sun8877777_microservices/pull/8/files с динамик инвентори и тегированием инстансов в терраформе
 
 Как создать кластер Kubernetes с помощью Kubeadm в Ubuntu 16.04
 https://www.digitalocean.com/community/tutorials/how-to-create-a-kubernetes-cluster-using-kubeadm-on-ubuntu-16-04-ru
@@ -56,7 +59,6 @@ cat /proc/swaps
 free -h
 sudo systemctl restart kubelet
 
-
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg;
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg;
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list;
@@ -82,10 +84,13 @@ mkdir -p $HOME/.kube;
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config;
 sudo chown $(id -u):$(id -g) $HOME/.kube/config;
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.4/manifests/calico.yaml;
+kubeadm token create --print-join-command;
 
 ansible all -i ./inventory.sh -m ping
 ansible all -m ping
 ansible-playbook -i ./inventory.sh kube-dependencies.yml
+
+cd ../terraform; terraform destroy -auto-approve; terraform apply -auto-approve; cd ../ansible; sleep 30; ansible-playbook full.yml
 ```
 
 Лекция 27 Введение в Kubernetes #1

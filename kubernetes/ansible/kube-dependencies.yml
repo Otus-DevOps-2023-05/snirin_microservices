@@ -1,36 +1,18 @@
-#  export IP=51.250.15.4;
-#+    sudo apt-get update;
-#+    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add;
-#+    sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main";
-#+    sudo apt-get -y install containerd kubelet=1.28.0-00 kubeadm=1.28.0-00 kubectl=1.28.0-00;
-#    sudo apt-mark hold kubelet kubeadm kubectl;
-#    sudo kubeadm config images pull --kubernetes-version v1.28.0
-#    sudo bash -c 'echo "net.bridge.bridge-nf-call-iptables = 1" >> /etc/sysctl.conf';
-#    sudo bash -c 'echo '1' > /proc/sys/net/ipv4/ip_forward';
-#    sudo sysctl --system;
-#    sudo modprobe overlay;
-#    sudo modprobe br_netfilter;
-#    echo $IP;
-#    sudo kubeadm init --apiserver-cert-extra-sans=$IP --apiserver-advertise-address=0.0.0.0 --control-plane-endpoint=$IP --pod-network-cidr=10.244.0.0/16
-#    mkdir -p $HOME/.kube;
-#    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config;
-#    sudo chown $(id -u):$(id -g) $HOME/.kube/config;
-#    kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.4/manifests/calico.yaml;
 - hosts: all
   become: yes
   tasks:
-    - name: install containerd
+    - name: Install containerd
       apt:
         name: containerd
         state: present
         update_cache: true
 
-    - name: add Kubernetes apt-key
+    - name: Add Kubernetes apt-key
       apt_key:
         url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
         state: present
 
-    - name: add Kubernetes' APT repository
+    - name: Add Kubernetes' APT repository
       apt_repository:
         repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
         state: present
@@ -52,33 +34,51 @@
         - kubeadm
         - kubectl
 
-#    - name: install APT Transport HTTPS
-#      apt:
-#        name: apt-transport-https
-#        state: present
-#
-#    - name: install kubernetes-cni
-#      apt:
-#        name: kubernetes-cni=0.7.5-00
-#        state: present
-#        update_cache: true
-#
-#    - name: install kubelet
-#      apt:
-#        name: kubelet=1.14.0-00
-#        state: present
-#        update_cache: true
-#
-#    - name: install kubeadm
-#      apt:
-#        name: kubeadm=1.14.0-00
-#        state: present
-#
-#- hosts: master
-#  become: yes
-#  tasks:
-#    - name: install kubectl
-#      apt:
-#        name: kubectl=1.14.0-00
-#        state: present
-#        force: yes
+    - name: Remove Swap entry from /etc/fstab
+      lineinfile:
+        dest: /etc/fstab
+        regexp: swap
+        state: absent
+      register: swap_fstab
+
+    - name: Make the Swap inactive (only when it was active)
+      command: swapoff -a
+      when: swap_fstab is changed
+
+    - name: Create an empty file for containerd module
+      copy:
+        content: ""
+        dest: /etc/modules-load.d/containerd.conf
+        force: no
+
+    - name: Configure module for containerd
+      blockinfile:
+        path: /etc/modules-load.d/containerd.conf
+        block: |
+          overlay
+          br_netfilter
+      register: modules
+
+    - name: Apply modules
+      command: /lib/systemd/systemd-modules-load
+      when: modules is changed
+
+    - name: Create an empty file for kubernetes sysctl params
+      copy:
+        content: ""
+        dest: /etc/sysctl.d/99-kubernetes-cri.conf
+        force: no
+
+    - name: Configure sysctl params for Kubernetes
+      lineinfile:
+        path: /etc/sysctl.d/99-kubernetes-cri.conf
+        line: "{{ item }}"
+      with_items:
+        - 'net.bridge.bridge-nf-call-iptables  = 1'
+        - 'net.ipv4.ip_forward                 = 1'
+        - 'net.bridge.bridge-nf-call-ip6tables = 1'
+      register: kernel_parameters
+
+    - name: Apply sysctl params
+      command: sysctl --system
+      when: kernel_parameters is changed

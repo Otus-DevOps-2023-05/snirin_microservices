@@ -14,5 +14,5 @@ spec:
         app: post
     spec:
       containers:
-        - image: chromko/post #todo
+        - image: snirinnn/post
           name: post
