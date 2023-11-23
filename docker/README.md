@@ -1,3 +1,4 @@
+Запуск чистого приложения без логирования в облаке Яндекса
 ```
 INSTANCE_NAME="docker-host";
 yc compute instance create \
@@ -23,6 +24,11 @@ ssh yc-user@$IP;
  
 docker-machine ip $INSTANCE_NAME;
 
-docker-compose -f docker-compose-initial.yml up -d;
+cd ../src-initial;
+cd ui; docker build -t snirinnn/ui:1.0 .; docker push snirinnn/ui:1.0; cd ..; 
+cd post-py; docker build -t snirinnn/post:1.0 .; docker push snirinnn/post:1.0; cd ..; 
+cd comment; docker build -t snirinnn/comment:1.0 .; docker push snirinnn/comment:1.0; cd ..;
+cd ../docker;
 
+docker-compose -f docker-compose-initial.yml up -d; 
 ```
