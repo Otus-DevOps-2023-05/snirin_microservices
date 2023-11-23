@@ -10,6 +10,15 @@ snirin microservices repository
 kubectl Cheat Sheet
 https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 
+Deploy and Access the Kubernetes Dashboard
+https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
+
+При старте Kubernetes кластер имеет следующие namespace:
+default
+kube-system
+kube-public
+kubernetes-dashboard
+
 Список команд
 ```
 minikube start
@@ -28,6 +37,18 @@ kubectl port-forward <pod-name> 8080:9292
 
 kubectl describe service comment | grep Endpoints
 kubectl exec -ti <pod-name> nslookup comment
+
+minikube service ui
+minikube service list
+
+kubectl get all -n kube-system --selector k8s-app=kubernetes-dashboard
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+kubectl apply -f dashboard-adminuser.yaml
+kubectl proxy
+http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/workloads?namespace=default
+kubectl -n kubernetes-dashboard create token admin-user
+
 ```
 
 

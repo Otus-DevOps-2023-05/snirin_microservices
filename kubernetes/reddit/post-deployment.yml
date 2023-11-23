@@ -1,5 +1,4 @@
 ---
-# todo 5000
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,3 +22,6 @@ spec:
       containers:
         - image: snirinnn/post:1.0
           name: post
+          env:
+            - name: POST_DATABASE_HOST
+              value: post-db
