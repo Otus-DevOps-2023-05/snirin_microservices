@@ -1,0 +1,36 @@
+version: '3.3'
+services:
+  post_db:
+    image: mongo:3.6
+    volumes:
+      - post_db:/data/db
+    networks:
+      back_net:
+        aliases:
+          - comment_db
+
+  ui:
+    image: snirinnn/ui:1.0
+    ports:
+      - 9292:9292/tcp
+    networks:
+      - front_net
+
+  post:
+    image: snirinnn/post:1.0
+    networks:
+      - back_net
+      - front_net
+
+  comment:
+    image: snirinnn/comment:1.0
+    networks:
+      - back_net
+      - front_net
+
+volumes:
+  post_db:
+
+networks:
+  back_net:
+  front_net:

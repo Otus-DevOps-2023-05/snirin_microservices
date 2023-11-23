@@ -1,18 +1,24 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: comment-deployment
+  name: comment
+  labels:
+    app: reddit
+    component: comment
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
-      app: comment
+      app: reddit
+      component: comment
   template:
     metadata:
-      name: comment
+      name: comment-pod
       labels:
-        app: comment
+        app: reddit
+        component: comment
     spec:
       containers:
-        - image: snirinnn/comment
+        - image: snirinnn/comment:1.0
           name: comment

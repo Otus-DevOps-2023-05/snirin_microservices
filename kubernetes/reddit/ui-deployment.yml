@@ -1,18 +1,24 @@
+---
 apiVersion: apps/v1
 kind: Deployment
-metadata:
-  name: ui-deployment
-spec:
-  replicas: 1
+metadata: # Блок метаданных деплоя
+  name: ui
+  labels:
+    app: reddit
+    component: ui
+spec: # Блок спецификации деплоя
+  replicas: 3
   selector:
     matchLabels:
-      app: ui
-  template:
+      app: reddit
+      component: ui
+  template: # Блок описания POD-ов
     metadata:
-      name: ui
+      name: ui-pod
       labels:
-        app: ui
+        app: reddit
+        component: ui
     spec:
       containers:
-        - image: snirinnn/ui
+        - image: snirinnn/ui:1.0
           name: ui

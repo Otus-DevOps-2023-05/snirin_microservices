@@ -3,6 +3,31 @@ snirin microservices repository
 
 ДЗ 27 Введение в Kubernetes #1
 1. Основное задание
+
+[//]: # (2. Задания со * )
+Для себя
+
+kubectl Cheat Sheet
+https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+
+Список команд
+```
+cat ~/.kube/config
+kubeclt config current-context
+kubectl config get-contexts
+kubectl apply -f ui-deployment.yml
+kubectl apply -f .
+kubectl delete -f .
+kubectl get deployment
+kubectl get pods --selector component=ui
+kubectl describe pods comment-7b69f8cd56-5v4l9
+kubectl logs -f my-pod
+kubectl port-forward <pod-name> 8080:9292
+```
+
+
+ДЗ 27 Введение в Kubernetes #1
+1. Основное задание
 2. Задания со *
    - Опишите установку кластера k8s с помощью terraform и ansible
 
