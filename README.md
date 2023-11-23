@@ -3,10 +3,13 @@ snirin microservices repository
 
 ДЗ 27 Введение в Kubernetes #1
 1. Основное задание
+   Развернут кластер kubernetes в облаке с приложением
+   http://192.168.58.2:31250/
 
-[//]: # (2. Задания со * )
+2. Задания со *
+   В процессе..
+
 Для себя
-
 kubectl Cheat Sheet
 https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 
@@ -49,6 +52,18 @@ kubectl proxy
 http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/workloads?namespace=default
 kubectl -n kubernetes-dashboard create token admin-user
 
+kubectl apply -n=dev -n=kubernetes-dashboard -f .
+minikube service ui -n dev
+
+yc managed-kubernetes cluster get-credentials otus-kube-cluster --external
+kubectl cluster-info --kubeconfig /home/sergey/.kube/config
+kubectl config current-context
+
+kubectl apply -f ./kubernetes/reddit/dev-namespace.yml
+kubectl apply -f ./kubernetes/reddit/ -n dev
+kubectl apply -f . -n dev
+kubectl get nodes -o wide
+kubectl describe service ui -n dev | grep NodePort
 ```
 
 
