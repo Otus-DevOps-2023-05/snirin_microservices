@@ -12,6 +12,8 @@ https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 
 Список команд
 ```
+minikube start
+kubectl get nodes
 cat ~/.kube/config
 kubeclt config current-context
 kubectl config get-contexts
@@ -23,6 +25,9 @@ kubectl get pods --selector component=ui
 kubectl describe pods comment-7b69f8cd56-5v4l9
 kubectl logs -f my-pod
 kubectl port-forward <pod-name> 8080:9292
+
+kubectl describe service comment | grep Endpoints
+kubectl exec -ti <pod-name> nslookup comment
 ```
 
 

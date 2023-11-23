@@ -20,7 +20,7 @@ spec:
         component: mongo
     spec:
       containers:
-        - image: mongo:3.2
+        - image: mongo:3.6
           name: mongo
           volumeMounts:
             - name: mongo-persistent-storage
