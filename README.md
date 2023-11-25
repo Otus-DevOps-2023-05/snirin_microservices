@@ -7,7 +7,8 @@ snirin microservices repository
    http://192.168.58.2:31250/
 
 2. Задания со *
-   В процессе..
+   - Разверните Kubernetes-кластер в Yandex cloud с помощью Terraform
+   - Создайте YAML-манифесты для описания созданных сущностей для включения dashboard - создан файл dashboard.yml
 
 Для себя
 kubectl Cheat Sheet
@@ -15,6 +16,12 @@ https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 
 Deploy and Access the Kubernetes Dashboard
 https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
+
+terraform yandex_kubernetes_cluster
+https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs/data-sources/datasource_kubernetes_cluster
+
+Создание кластера Managed Service for Kubernetes
+https://cloud.yandex.ru/docs/managed-kubernetes/operations/kubernetes-cluster/kubernetes-cluster-create
 
 При старте Kubernetes кластер имеет следующие namespace:
 default
