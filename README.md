@@ -1,6 +1,80 @@
 # snirin_microservices
 snirin microservices repository
 
+ДЗ 29 Основные модели безопасности и контроллеры в Kubernetes
+1. Основное задание
+   Развернут кластер kubernetes в облаке с приложением
+   http://158.160.127.54:31088/
+
+2. Задания со *
+   - Разверните Kubernetes-кластер в Yandex cloud с помощью Terraform
+   - Создайте YAML-манифесты для описания созданных сущностей для включения dashboard - создан файл dashboard.yml
+
+Для себя
+kubectl Cheat Sheet
+https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+
+Deploy and Access the Kubernetes Dashboard
+https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
+
+terraform yandex_kubernetes_cluster
+https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs/data-sources/datasource_kubernetes_cluster
+
+Создание кластера Managed Service for Kubernetes
+https://cloud.yandex.ru/docs/managed-kubernetes/operations/kubernetes-cluster/kubernetes-cluster-create
+
+При старте Kubernetes кластер имеет следующие namespace:
+default
+kube-system
+kube-public
+kubernetes-dashboard
+
+Список команд
+```
+minikube start
+kubectl get nodes
+cat ~/.kube/config
+kubeclt config current-context
+kubectl config get-contexts
+kubectl apply -f ui-deployment.yml
+kubectl apply -f .
+kubectl delete -f .
+kubectl get deployment
+kubectl get pods --selector component=ui
+kubectl describe pods comment-7b69f8cd56-5v4l9
+kubectl logs -f my-pod
+kubectl port-forward <pod-name> 8080:9292
+
+kubectl describe service comment | grep Endpoints
+kubectl exec -ti <pod-name> nslookup comment
+
+minikube service ui
+minikube service list
+
+kubectl get all -n kube-system --selector k8s-app=kubernetes-dashboard
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+kubectl apply -f dashboard-adminuser.yaml
+kubectl proxy
+http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/workloads?namespace=default
+kubectl -n kubernetes-dashboard create token admin-user
+
+kubectl apply -n=dev -n=kubernetes-dashboard -f .
+minikube service ui -n dev
+
+yc managed-kubernetes cluster list
+yc managed-kubernetes cluster get-credentials otus-k8s --external
+kubectl cluster-info --kubeconfig /home/sergey/.kube/config
+kubectl config current-context
+
+kubectl apply -f ./kubernetes/reddit/dev-namespace.yml
+kubectl apply -f ./kubernetes/reddit/ -n dev
+kubectl apply -f . -n dev
+kubectl get nodes -o wide
+kubectl describe service ui -n dev | grep NodePort
+```
+
+
 ДЗ 27 Введение в Kubernetes #1
 1. Основное задание
 2. Задания со *
