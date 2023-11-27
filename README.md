@@ -25,6 +25,10 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 
 kubectl get ns
 kubectl get ingress
+
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj "/CN=158.160.130.179"
+kubectl create secret tls ui-ingress --key tls.key --cert tls.crt
+kubectl describe secret ui-ingress
 ```
 
 
