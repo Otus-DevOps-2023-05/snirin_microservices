@@ -1,6 +1,116 @@
 # snirin_microservices
 snirin microservices repository
 
+ДЗ 30 Ingress-контроллеры и сервисы в Kubernetes
+1. Основное задание
+2. Задание со *
+   - Опишите создаваемый объект Secret в виде Kubernetes-манифеста.
+
+Для себя
+Установка Ingress-контроллера NGINX с менеджером для сертификатов Let's Encrypt
+https://cloud.yandex.ru/docs/managed-kubernetes/tutorials/ingress-cert-manager#install-controller
+
+Список команд
+```
+kubectl exec -ti  comment-664f4f9b77-9xx29 -- ping comment
+kubectl exec -ti  comment-664f4f9b77-9xx29 -- bash
+
+kubectl get services -n dev
+kubectl scale deployment --replicas 0 -n kube-system kube-dns-autoscaler
+kubectl scale deployment --replicas 0 -n kube-system kube-dns
+
+kubectl get service -n dev --selector component=ui
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+
+kubectl get ns
+kubectl get ingress
+
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj "/CN=158.160.130.179"
+kubectl create secret tls ui-ingress --key tls.key --cert tls.crt
+kubectl describe secret ui-ingress
+
+yc compute disk create --name k8s --size 4 --description "disk for k8s"
+
+kubectl delete deploy mongo
+kubectl apply -f mongo-deployment.yml 
+```
+
+
+ДЗ 29 Основные модели безопасности и контроллеры в Kubernetes
+1. Основное задание
+   Развернут кластер kubernetes в облаке с приложением
+   http://158.160.127.54:31088/
+
+2. Задания со *
+   - Разверните Kubernetes-кластер в Yandex cloud с помощью Terraform
+   - Создайте YAML-манифесты для описания созданных сущностей для включения dashboard - создан файл dashboard.yml
+
+Для себя
+kubectl Cheat Sheet
+https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+
+Deploy and Access the Kubernetes Dashboard
+https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
+
+terraform yandex_kubernetes_cluster
+https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs/data-sources/datasource_kubernetes_cluster
+
+Создание кластера Managed Service for Kubernetes
+https://cloud.yandex.ru/docs/managed-kubernetes/operations/kubernetes-cluster/kubernetes-cluster-create
+
+При старте Kubernetes кластер имеет следующие namespace:
+default
+kube-system
+kube-public
+kubernetes-dashboard
+
+Список команд
+```
+minikube start
+kubectl get nodes
+cat ~/.kube/config
+kubeclt config current-context
+kubectl config get-contexts
+kubectl apply -f ui-deployment.yml
+kubectl apply -f .
+kubectl delete -f .
+kubectl get deployment
+kubectl get pods --selector component=ui
+kubectl describe pods comment-7b69f8cd56-5v4l9
+kubectl logs -f my-pod
+kubectl port-forward <pod-name> 8080:9292
+
+kubectl describe service comment | grep Endpoints
+kubectl exec -ti <pod-name> nslookup comment
+
+minikube service ui
+minikube service list
+
+kubectl get all -n kube-system --selector k8s-app=kubernetes-dashboard
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+kubectl apply -f dashboard-adminuser.yaml
+kubectl proxy
+http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/workloads?namespace=default
+kubectl -n kubernetes-dashboard create token admin-user
+
+kubectl apply -n=dev -n=kubernetes-dashboard -f .
+minikube service ui -n dev
+
+yc managed-kubernetes cluster list
+yc managed-kubernetes cluster get-credentials otus-k8s --external
+kubectl cluster-info --kubeconfig /home/sergey/.kube/config
+kubectl config current-context
+
+kubectl apply -f ./kubernetes/reddit/dev-namespace.yml
+kubectl apply -f ./kubernetes/reddit/ -n dev
+kubectl apply -f . -n dev
+kubectl get nodes -o wide
+kubectl describe service ui -n dev | grep NodePort
+```
+
+
 ДЗ 27 Введение в Kubernetes #1
 1. Основное задание
 2. Задания со *
