@@ -1,5 +1,5 @@
 ---
-apiVersion: apps/v1
+apiVersion: v1
 kind: Deployment
 metadata:
   name: mongo
@@ -31,4 +31,5 @@ spec:
               mountPath: /data/db
       volumes:
         - name: mongo-persistent-storage
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName:  mongo-pvc
