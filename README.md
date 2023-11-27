@@ -1,6 +1,33 @@
 # snirin_microservices
 snirin microservices repository
 
+ДЗ 30 Ingress-контроллеры и сервисы в Kubernetes
+1. Основное задание
+
+2. Задания со *
+
+Для себя
+Установка Ingress-контроллера NGINX с менеджером для сертификатов Let's Encrypt
+https://cloud.yandex.ru/docs/managed-kubernetes/tutorials/ingress-cert-manager#install-controller
+
+Список команд
+```
+kubectl exec -ti  comment-664f4f9b77-9xx29 -- ping comment
+kubectl exec -ti  comment-664f4f9b77-9xx29 -- bash
+
+kubectl get services -n dev
+kubectl scale deployment --replicas 0 -n kube-system kube-dns-autoscaler
+kubectl scale deployment --replicas 0 -n kube-system kube-dns
+
+kubectl get service -n dev --selector component=ui
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+
+kubectl get ns
+kubectl get ingress
+```
+
+
 ДЗ 29 Основные модели безопасности и контроллеры в Kubernetes
 1. Основное задание
    Развернут кластер kubernetes в облаке с приложением
