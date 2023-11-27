@@ -1,10 +1,10 @@
 # snirin_microservices
 snirin microservices repository
 
-ДЗ 27 Введение в Kubernetes #1
+ДЗ 29 Основные модели безопасности и контроллеры в Kubernetes
 1. Основное задание
    Развернут кластер kubernetes в облаке с приложением
-   http://192.168.58.2:31250/
+   http://158.160.127.54:31088/
 
 2. Задания со *
    - Разверните Kubernetes-кластер в Yandex cloud с помощью Terraform
@@ -62,7 +62,8 @@ kubectl -n kubernetes-dashboard create token admin-user
 kubectl apply -n=dev -n=kubernetes-dashboard -f .
 minikube service ui -n dev
 
-yc managed-kubernetes cluster get-credentials otus-kube-cluster --external
+yc managed-kubernetes cluster list
+yc managed-kubernetes cluster get-credentials otus-k8s --external
 kubectl cluster-info --kubeconfig /home/sergey/.kube/config
 kubectl config current-context
 
