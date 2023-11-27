@@ -3,8 +3,8 @@ snirin microservices repository
 
 ДЗ 30 Ingress-контроллеры и сервисы в Kubernetes
 1. Основное задание
-
-2. Задания со *
+2. Задание со *
+   - Опишите создаваемый объект Secret в виде Kubernetes-манифеста.
 
 Для себя
 Установка Ingress-контроллера NGINX с менеджером для сертификатов Let's Encrypt
@@ -33,6 +33,7 @@ kubectl describe secret ui-ingress
 yc compute disk create --name k8s --size 4 --description "disk for k8s"
 
 kubectl delete deploy mongo
+kubectl apply -f mongo-deployment.yml 
 ```
 
 
