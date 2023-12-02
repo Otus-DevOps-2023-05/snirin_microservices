@@ -1,6 +1,19 @@
 # snirin_microservices
 snirin microservices repository
 
+ДЗ 31 Интеграция Kubernetes в GitlabCI
+1. Основное задание
+2. Задание со *
+
+Для себя
+
+Список команд
+```
+kubectl apply -f tiller.yml
+helm install test-ui-1 ./ui
+```
+
+
 ДЗ 30 Ingress-контроллеры и сервисы в Kubernetes
 1. Основное задание
 2. Задание со *
@@ -9,6 +22,9 @@ snirin microservices repository
 Для себя
 Установка Ingress-контроллера NGINX с менеджером для сертификатов Let's Encrypt
 https://cloud.yandex.ru/docs/managed-kubernetes/tutorials/ingress-cert-manager#install-controller
+
+Список литературы и статей про kubernetes
+https://github.com/Otus-DevOps-2023-05/aasdhajkshd_microservices#hw30
 
 Список команд
 ```
@@ -207,6 +223,17 @@ cd ../terraform; terraform destroy -auto-approve; terraform apply -auto-approve;
 Pod - группа контейнеров
 Node - машина
 Один Pod - один IP
+Компоненты на мастере
+- etcd
+- api-server
+- controller-manager
+- scheduler
+
+На всех нодах
+- kubelet
+- kube-proxy
+
+Liveness probe, readyness probe, startup probe
 
 Лекция 26 Контейнерная оркестрация
 Docker swarm, Hashicorp Nomad, Apache Mesos, k8s

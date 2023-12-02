@@ -1,0 +1,8 @@
+---
+service:
+  internalPort: 9292
+  externalPort: 9292
+
+image:
+  repository: snirinnn/ui
+  tag: 1.0
