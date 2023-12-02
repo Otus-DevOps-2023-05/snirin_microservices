@@ -13,6 +13,44 @@ kubectl apply -f tiller.yml
 helm install test-ui-1 ./ui
 ```
 
+Лекция 31 Интеграция Kubernetes в GitlabCI
+Helm - Ansible для Kubernetes, шаблоны
+В хельме - чарты и релизы
+argo лучше чем gitlab, flux еще лучше
+
+Список материалов для изучения
+1. Gitlab Kubernetes Agent https://docs.gitlab.com/ee/user/clusters/agent/install/index.html
+2. Helm docs https://helm.sh/docs/
+3. Docker Hub - alpine/helm https://hub.docker.com/r/alpine/helm
+4. https://gitlab.com/osm1um/nginx-deploy
+5. https://github.com/bitnami/charts/tree/main
+6. https://akuity.io/blog/introducing-kargo/
+7. https://docs.gitlab.com/ee/user/clusters/agent/
+
+Список команд
+```
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+
+helm --kubeconfig=./admin.yml install
+ --timeout 15m
+ --namespace=development
+ --values=variables.yml
+ --set custom.variable=value
+ ingress-nginx ingress-nginx/ingress-nginx
+
+# обновление пакета в кластере
+helm upgrade -f variables.yml ingress-nginx ingress-nginx/ingress-nginx
+
+# Отладка - просмотр получившихся шаблонов
+helm template -f variables.yml web ./charts/web/
+
+# Отладка - проверка корректности чарта перед запуском
+helm install --debug --dry-run ingress ingress-nginx/ingress-nginx
+
+# Просмотр стандартных настроек чарта
+helm show values ingress-nginx/ingress-nginx
+```
+
 
 ДЗ 30 Ingress-контроллеры и сервисы в Kubernetes
 1. Основное задание
@@ -50,6 +88,23 @@ yc compute disk create --name k8s --size 4 --description "disk for k8s"
 
 kubectl delete deploy mongo
 kubectl apply -f mongo-deployment.yml 
+```
+
+Лекция 30 Ingress-контроллеры и сервисы в Kubernetes
+https://k8s.af/ - список провалов с кубернетес
+Свитч - коммутатор на L2
+Типы сервисов:
+- ClusterIP
+- NodePort
+- LoadBalancer
+- ExternalName
+- Headless service
+
+
+Список команд
+```
+dig -t A ya.ru
+curl -I -v ya.ru
 ```
 
 
@@ -102,6 +157,7 @@ kubectl exec -ti <pod-name> nslookup comment
 
 minikube service ui
 minikube service list
+minikube ssh
 
 kubectl get all -n kube-system --selector k8s-app=kubernetes-dashboard
 
@@ -126,6 +182,22 @@ kubectl get nodes -o wide
 kubectl describe service ui -n dev | grep NodePort
 ```
 
+Лекция 29 Основные модели безопасности и контроллеры в Kubernetes
+Admission controllers
+https://editor.networkpolicy.io - редактирование правил для сети
+Service mesh - например, istio на уровне L7, обратный прокси, работающий через апи
+syft nginx:1.14 - анализ образа
+kube-hunter - аудит кластера
+
+Лекция 28 Введение в Kubernetes #2
+Деплоймент создает разные реплика-сеты, которые уже создают поды
+pv, pvc
+
+Список команд
+```
+minikube ssh
+ps auxf
+```
 
 ДЗ 27 Введение в Kubernetes #1
 1. Основное задание
