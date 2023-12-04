@@ -1,6 +1,28 @@
 # snirin_microservices
 snirin microservices repository
 
+Лекция 32 Kubernetes. Мониторинг и логирование
+Список материалов для изучения
+1. https://prometheus.io/docs/prometheus/latest/getting_started/
+2. https://habr.com/ru/companies/tochka/articles/683608/
+3. https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
+4. https://github.com/roaldnefs/awesome-prometheus
+
+Шпаргалка, если не работают поды в кубернетес
+https://nubenetes.com/images/learnk8s_debug_your_pods.png
+
+Три вида probes - startup, liveness, readyness, каждая по три типа - http, tcp, sh command
+cAdvisor - источник метрик, exporter для Prometheus
+metrics-server - собирает метрики cAdvisor, отсутствует endpoint для Prometheus
+kube-state-metrics - работает как exporter для Prometheus
+
+Список команд
+```
+kubectl top nodes
+kubectl top pods
+```
+
+
 ДЗ 31 Интеграция Kubernetes в GitlabCI
 1. Основное задание
 2. Задание со *
