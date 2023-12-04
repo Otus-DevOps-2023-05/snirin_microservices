@@ -4,7 +4,7 @@ service:
   externalPort: 5000
 
 image:
-  repository: snirinnn/post
+  repository: snirinnn/comment
   tag: "1.0"
 
 databaseHost:
