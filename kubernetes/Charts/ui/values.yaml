@@ -6,3 +6,11 @@ service:
 image:
   repository: snirinnn/ui
   tag: "1.0"
+
+#ingress:
+#  class: nginx
+
+postHost:
+postPort:
+commentHost:
+commentPort:

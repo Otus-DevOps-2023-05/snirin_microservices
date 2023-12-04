@@ -64,12 +64,14 @@ helm uninstall test-ui-1
 helm upgrade test-ui-1 ui/
 helm ls
 helm dep update
+helm dep update ./reddit
 
 helm search hub mongo
 helm repo list
 helm repo add stable https://charts.helm.sh/stable
 helm repo update
 helm search repo stable/mongodb
+helm search repo mongo -l
 
 helm install reddit-test reddit
 ```
