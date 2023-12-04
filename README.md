@@ -62,7 +62,16 @@ kubectl top pods
 helm install test-ui-1 ./ui
 helm uninstall test-ui-1
 helm upgrade test-ui-1 ui/
+helm ls
+helm dep update
 
+helm search hub mongo
+helm repo list
+helm repo add stable https://charts.helm.sh/stable
+helm repo update
+helm search repo stable/mongodb
+
+helm install reddit-test reddit
 ```
 
 ```
