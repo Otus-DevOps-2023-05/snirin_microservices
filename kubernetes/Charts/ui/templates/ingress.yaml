@@ -12,5 +12,7 @@ spec:
           - pathType: ImplementationSpecific
             path: /*
             backend:
-              serviceName: {{ .Release.Name }}-{{ .Chart.Name }}
-              servicePort: 9292
+              service:
+                name: {{ .Release.Name }}-{{ .Chart.Name }}
+                port:
+                  number: 9292

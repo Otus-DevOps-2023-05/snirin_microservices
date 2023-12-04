@@ -24,15 +24,45 @@ kubectl top pods
 
 
 ДЗ 31 Интеграция Kubernetes в GitlabCI
+Что сделано
 1. Основное задание
 2. Задание со *
 
 Для себя
 
+Список литературы и статей:
+- [Менеджер пакетов для Kubernetes](https://helm.sh/ru/)
+- [Setup a Kubernetes Cluster](https://istio.io/v1.7/docs/examples/microservices-istio/setup-kubernetes-cluster/)
+- [Helm 2 vs Helm 3](https://www.hippolab.ru/helm-2-vs-helm-3)
+- [helm/helm](https://get.helm.sh/helm-v2.17.1-linux-amd64.tar.gz)
+- [The Chart Template](https://helm.sh/docs/chart_template_guide/#the-chart-template-developer-s-guide)
+- [Charts](https://helm.sh/docs/topics/charts/)
+- [Метки и селекторы](https://kubernetes.io/ru/docs/concepts/overview/working-with-objects/labels/)
+- [Аннотации](https://kubernetes.io/ru/docs/concepts/overview/working-with-objects/annotations/)
+- [Ingress.yaml template is throwing nil pointer evaluating interface {}.enabled](https://stackoverflow.com/questions/67023533/ingress-yaml-template-is-throwing-nil-pointer-evaluating-interface-enabled)
+- [Основы работы с Helm чартами и темплейтами — Часть 2](https://habr.com/ru/articles/548720/)
+- [Удаление helm 2](https://stackoverflow.com/questions/47583821/how-to-delete-tiller-from-kubernetes-cluster/47583918)
+- [K9s](https://github.com/derailed/k9s)
+- [Docker container build driver](https://docs.docker.com/build/drivers/docker-container/)
+- [docker buildx build](https://docs.docker.com/engine/reference/commandline/buildx_build/#load)
+- [overview of Linux capabilities](https://man7.org/linux/man-pages/man7/capabilities.7.html)
+- [Установка GitLab Runner](https://cloud.yandex.com/en/docs/managed-kubernetes/operations/applications/gitlab-runner)
+- [Running privileged containers for the runners](https://docs.gitlab.com/runner/install/kubernetes.html#running-privileged-containers-for-the-runners)
+- [skopeo](https://github.com/containers/skopeo)
+- [docker buildx imagetools create](https://docs.docker.com/engine/reference/commandline/buildx_imagetools_create/)
+- [What kubernetes permissions does GitLab runner kubernetes executor need?](https://stackoverflow.com/questions/60834960/what-kubernetes-permissions-does-gitlab-runner-kubernetes-executor-need)
+- [Use tags to control which jobs a runner can run](https://docs.gitlab.com/16.5/ee/ci/runners/configure_runners.html#use-tags-to-control-which-jobs-a-runner-can-run)
+- [Непрерывное развертывание контейнеризованных приложений с помощью GitLab](https://cloud.yandex.ru/docs/managed-kubernetes/tutorials/gitlab-containers)
+- [Установка GitLab Agent](https://cloud.yandex.ru/docs/managed-kubernetes/operations/applications/gitlab-agent)
+- [Environments and deployments](https://docs.gitlab.com/16.5/ee/ci/environments/index.html)
+
+
 Список команд
 ```
-kubectl apply -f tiller.yml
 helm install test-ui-1 ./ui
+helm uninstall test-ui-1
+
+
 ```
 
 Лекция 31 Интеграция Kubernetes в GitlabCI
