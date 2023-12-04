@@ -74,6 +74,16 @@ helm search repo stable/mongodb
 helm search repo mongo -l
 
 helm install reddit-test reddit
+
+kubectl get pods
+kubectl exec -ti reddit-test-ui-865bfdb86d-bld2n bash
+curl reddit-test-post:5000/posts
+
+kubectl exec -ti reddit-test-comment-75495bb44b-xh48z bash
+curl localhost:9292/healthcheck
+curl localhost:9292/656e1ee4751b3f6c9423a483/comments
+
+kubectl describe pods reddit-test-comment-75495bb44b-xh48z
 ```
 
 ```

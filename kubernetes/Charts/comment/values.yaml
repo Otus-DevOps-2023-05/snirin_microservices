@@ -1,7 +1,7 @@
 ---
 service:
-  internalPort: 5000
-  externalPort: 5000
+  internalPort: 9292
+  externalPort: 9292
 
 image:
   repository: snirinnn/comment
