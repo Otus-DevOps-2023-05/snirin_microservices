@@ -5,4 +5,4 @@ service:
 
 image:
   repository: snirinnn/ui
-  tag: 1.0
+  tag: "1.0"

@@ -61,7 +61,12 @@ kubectl top pods
 ```
 helm install test-ui-1 ./ui
 helm uninstall test-ui-1
+helm upgrade test-ui-1 ui/
 
+```
+
+```
+Error: UPGRADE FAILED: failed to create resource: admission webhook "validate.nginx.ingress.kubernetes.io" denied the request: host "_" and path "/" is already defined in ingress default/test-ui-1-ui
 
 ```
 
