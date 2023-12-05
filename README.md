@@ -56,12 +56,10 @@ kubectl top pods
 - [Установка GitLab Agent](https://cloud.yandex.ru/docs/managed-kubernetes/operations/applications/gitlab-agent)
 - [Environments and deployments](https://docs.gitlab.com/16.5/ee/ci/environments/index.html)
 
+https://docs.gitlab.com/charts/quickstart/
 
 Список команд
 ```
-kubectl apply -f tiller.yml
-helm init --service-account tiller
-
 helm install test-ui-1 ./ui
 helm uninstall test-ui-1
 helm upgrade test-ui-1 ui/
@@ -94,8 +92,28 @@ helm repo add gitlab https://charts.gitlab.io
 helm fetch gitlab/gitlab-omnibus --version 0.1.37 --untar 
 cd gitlab-omnibus
 
+kubectl apply -f tiller.yml
+helm2 init --service-account tiller
+
 helm install gitlab . -f values.yaml
 
+helm search repo -l gitlab/gitlab-runner
+
+helm install gitlab gitlab/gitlab \
+  --set global.hosts.domain=infranet.dev \
+  --set certmanager-issuer.email=admin@infranet.dev
+
+helm uninstall gitlab
+
+kubectl get pods | awk 'NR>1 {print $1}' | xargs -I % sh -c 'echo %; kubectl logs % --tail=10'
+
+sudo sh -c 'echo "158.160.128.104 gitlab.example.com" >> /etc/hosts'
+
+kubectl get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}' | base64 --decode ; echo
+
+git init;
+git remote add origin https://gitlab.example.com/snirinnn/ui.git;
+git add .; git commit -m "init"; git -c http.sslVerify=false push origin master
 ```
 
 ```
