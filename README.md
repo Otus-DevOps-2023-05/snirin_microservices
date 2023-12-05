@@ -84,6 +84,14 @@ curl localhost:9292/healthcheck
 curl localhost:9292/656e1ee4751b3f6c9423a483/comments
 
 kubectl describe pods reddit-test-comment-75495bb44b-xh48z
+
+yc managed-kubernetes cluster get-credentials otus-k8s --external
+
+helm repo add gitlab https://charts.gitlab.io
+helm fetch gitlab/gitlab-omnibus --version 0.1.37 --untar 
+cd gitlab-omnibus
+
+
 ```
 
 ```
