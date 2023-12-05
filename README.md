@@ -91,6 +91,7 @@ helm repo add gitlab https://charts.gitlab.io
 helm fetch gitlab/gitlab-omnibus --version 0.1.37 --untar 
 cd gitlab-omnibus
 
+helm install gitlab . -f values.yaml
 
 ```
 
