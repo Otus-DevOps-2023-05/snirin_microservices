@@ -59,6 +59,9 @@ kubectl top pods
 
 Список команд
 ```
+kubectl apply -f tiller.yml
+helm init --service-account tiller
+
 helm install test-ui-1 ./ui
 helm uninstall test-ui-1
 helm upgrade test-ui-1 ui/
