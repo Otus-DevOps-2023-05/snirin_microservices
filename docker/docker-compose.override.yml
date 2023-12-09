@@ -28,7 +28,7 @@ services:
   post:
     env_file:
       - .env
-    build: ../src/post-py
+    build: ../src/post
     image: ${USER_NAME}/post:${POST_VERSION}
 #    volumes:
 #      - ../src/post-py:/app
