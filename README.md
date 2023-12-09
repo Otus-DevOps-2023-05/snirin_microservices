@@ -1,6 +1,311 @@
 # snirin_microservices
 snirin microservices repository
 
+Лекция 32 Kubernetes. Мониторинг и логирование
+Список материалов для изучения
+1. https://prometheus.io/docs/prometheus/latest/getting_started/
+2. https://habr.com/ru/companies/tochka/articles/683608/
+3. https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
+4. https://github.com/roaldnefs/awesome-prometheus
+
+Шпаргалка, если не работают поды в кубернетес
+https://nubenetes.com/images/learnk8s_debug_your_pods.png
+
+Три вида probes - startup, liveness, readyness, каждая по три типа - http, tcp, sh command
+cAdvisor - источник метрик, exporter для Prometheus
+metrics-server - собирает метрики cAdvisor, отсутствует endpoint для Prometheus
+kube-state-metrics - работает как exporter для Prometheus
+
+Список команд
+```
+kubectl top nodes
+kubectl top pods
+```
+
+
+ДЗ 31 Интеграция Kubernetes в GitlabCI
+Что сделано
+1. Установка приложение через Helm
+   Развернуть gitlab по инструкции не удалось
+
+Для себя
+Список литературы и статей:
+- [Менеджер пакетов для Kubernetes](https://helm.sh/ru/)
+- [Setup a Kubernetes Cluster](https://istio.io/v1.7/docs/examples/microservices-istio/setup-kubernetes-cluster/)
+- [Helm 2 vs Helm 3](https://www.hippolab.ru/helm-2-vs-helm-3)
+- [helm/helm](https://get.helm.sh/helm-v2.17.1-linux-amd64.tar.gz)
+- [The Chart Template](https://helm.sh/docs/chart_template_guide/#the-chart-template-developer-s-guide)
+- [Charts](https://helm.sh/docs/topics/charts/)
+- [Метки и селекторы](https://kubernetes.io/ru/docs/concepts/overview/working-with-objects/labels/)
+- [Аннотации](https://kubernetes.io/ru/docs/concepts/overview/working-with-objects/annotations/)
+- [Ingress.yaml template is throwing nil pointer evaluating interface {}.enabled](https://stackoverflow.com/questions/67023533/ingress-yaml-template-is-throwing-nil-pointer-evaluating-interface-enabled)
+- [Основы работы с Helm чартами и темплейтами — Часть 2](https://habr.com/ru/articles/548720/)
+- [Удаление helm 2](https://stackoverflow.com/questions/47583821/how-to-delete-tiller-from-kubernetes-cluster/47583918)
+- [K9s](https://github.com/derailed/k9s)
+- [Docker container build driver](https://docs.docker.com/build/drivers/docker-container/)
+- [docker buildx build](https://docs.docker.com/engine/reference/commandline/buildx_build/#load)
+- [overview of Linux capabilities](https://man7.org/linux/man-pages/man7/capabilities.7.html)
+- [Установка GitLab Runner](https://cloud.yandex.com/en/docs/managed-kubernetes/operations/applications/gitlab-runner)
+- [Running privileged containers for the runners](https://docs.gitlab.com/runner/install/kubernetes.html#running-privileged-containers-for-the-runners)
+- [skopeo](https://github.com/containers/skopeo)
+- [docker buildx imagetools create](https://docs.docker.com/engine/reference/commandline/buildx_imagetools_create/)
+- [What kubernetes permissions does GitLab runner kubernetes executor need?](https://stackoverflow.com/questions/60834960/what-kubernetes-permissions-does-gitlab-runner-kubernetes-executor-need)
+- [Use tags to control which jobs a runner can run](https://docs.gitlab.com/16.5/ee/ci/runners/configure_runners.html#use-tags-to-control-which-jobs-a-runner-can-run)
+- [Непрерывное развертывание контейнеризованных приложений с помощью GitLab](https://cloud.yandex.ru/docs/managed-kubernetes/tutorials/gitlab-containers)
+- [Установка GitLab Agent](https://cloud.yandex.ru/docs/managed-kubernetes/operations/applications/gitlab-agent)
+- [Environments and deployments](https://docs.gitlab.com/16.5/ee/ci/environments/index.html)
+
+https://docs.gitlab.com/charts/quickstart/
+
+Список команд
+```
+helm install test-ui-1 ./ui
+helm uninstall test-ui-1
+helm upgrade test-ui-1 ui/
+helm ls
+helm dep update
+helm dep update ./reddit
+
+helm search hub mongo
+helm repo list
+helm repo add stable https://charts.helm.sh/stable
+helm repo update
+helm search repo stable/mongodb
+helm search repo mongo -l
+
+helm install reddit-test reddit
+
+kubectl get pods
+kubectl exec -ti reddit-test-ui-865bfdb86d-bld2n bash
+curl reddit-test-post:5000/posts
+
+kubectl exec -ti reddit-test-comment-75495bb44b-xh48z bash
+curl localhost:9292/healthcheck
+curl localhost:9292/656e1ee4751b3f6c9423a483/comments
+
+kubectl describe pods reddit-test-comment-75495bb44b-xh48z
+
+yc managed-kubernetes cluster get-credentials otus-k8s --external
+
+helm repo add gitlab https://charts.gitlab.io
+helm fetch gitlab/gitlab-omnibus --version 0.1.37 --untar 
+cd gitlab-omnibus
+
+kubectl apply -f tiller.yml
+helm2 init --service-account tiller
+
+helm install gitlab . -f values.yaml
+
+helm search repo -l gitlab/gitlab-runner
+
+helm install gitlab gitlab/gitlab \
+  --set global.hosts.domain=infranet.dev \
+  --set certmanager-issuer.email=admin@infranet.dev
+
+helm uninstall gitlab
+
+kubectl get pods | awk 'NR>1 {print $1}' | xargs -I % sh -c 'echo %; kubectl logs % --tail=10'
+
+sudo sh -c 'echo "158.160.128.104 gitlab.example.com" >> /etc/hosts'
+
+kubectl get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}' | base64 --decode ; echo
+
+git init;
+git remote add origin https://gitlab.example.com/snirinnn/ui.git;
+git add .; git commit -m "init"; git -c http.sslVerify=false push origin master
+```
+
+```
+Error: UPGRADE FAILED: failed to create resource: admission webhook "validate.nginx.ingress.kubernetes.io" denied the request: host "_" and path "/" is already defined in ingress default/test-ui-1-ui
+
+```
+
+Лекция 31 Интеграция Kubernetes в GitlabCI
+Helm - Ansible для Kubernetes, шаблоны
+В хельме - чарты и релизы
+argo лучше чем gitlab, flux еще лучше
+
+Список материалов для изучения
+1. Gitlab Kubernetes Agent https://docs.gitlab.com/ee/user/clusters/agent/install/index.html
+2. Helm docs https://helm.sh/docs/
+3. Docker Hub - alpine/helm https://hub.docker.com/r/alpine/helm
+4. https://gitlab.com/osm1um/nginx-deploy
+5. https://github.com/bitnami/charts/tree/main
+6. https://akuity.io/blog/introducing-kargo/
+7. https://docs.gitlab.com/ee/user/clusters/agent/
+
+Список команд
+```
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+
+helm --kubeconfig=./admin.yml install
+ --timeout 15m
+ --namespace=development
+ --values=variables.yml
+ --set custom.variable=value
+ ingress-nginx ingress-nginx/ingress-nginx
+
+# обновление пакета в кластере
+helm upgrade -f variables.yml ingress-nginx ingress-nginx/ingress-nginx
+
+# Отладка - просмотр получившихся шаблонов
+helm template -f variables.yml web ./charts/web/
+
+# Отладка - проверка корректности чарта перед запуском
+helm install --debug --dry-run ingress ingress-nginx/ingress-nginx
+
+# Просмотр стандартных настроек чарта
+helm show values ingress-nginx/ingress-nginx
+```
+
+
+ДЗ 30 Ingress-контроллеры и сервисы в Kubernetes
+1. Основное задание
+2. Задание со *
+   - Опишите создаваемый объект Secret в виде Kubernetes-манифеста.
+
+Для себя
+Установка Ingress-контроллера NGINX с менеджером для сертификатов Let's Encrypt
+https://cloud.yandex.ru/docs/managed-kubernetes/tutorials/ingress-cert-manager#install-controller
+
+Список литературы и статей про kubernetes
+https://github.com/Otus-DevOps-2023-05/aasdhajkshd_microservices#hw30
+
+Список команд
+```
+kubectl exec -ti  comment-664f4f9b77-9xx29 -- ping comment
+kubectl exec -ti  comment-664f4f9b77-9xx29 -- bash
+
+kubectl get services -n dev
+kubectl scale deployment --replicas 0 -n kube-system kube-dns-autoscaler
+kubectl scale deployment --replicas 0 -n kube-system kube-dns
+
+kubectl get service -n dev --selector component=ui
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+
+kubectl get ns
+kubectl get ingress
+
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj "/CN=158.160.130.179"
+kubectl create secret tls ui-ingress --key tls.key --cert tls.crt
+kubectl describe secret ui-ingress
+
+yc compute disk create --name k8s --size 4 --description "disk for k8s"
+
+kubectl delete deploy mongo
+kubectl apply -f mongo-deployment.yml 
+```
+
+Лекция 30 Ingress-контроллеры и сервисы в Kubernetes
+https://k8s.af/ - список провалов с кубернетес
+Свитч - коммутатор на L2
+Типы сервисов:
+- ClusterIP
+- NodePort
+- LoadBalancer
+- ExternalName
+- Headless service
+
+
+Список команд
+```
+dig -t A ya.ru
+curl -I -v ya.ru
+```
+
+
+ДЗ 29 Основные модели безопасности и контроллеры в Kubernetes
+1. Основное задание
+   Развернут кластер kubernetes в облаке с приложением
+   http://158.160.127.54:31088/
+
+2. Задания со *
+   - Разверните Kubernetes-кластер в Yandex cloud с помощью Terraform
+   - Создайте YAML-манифесты для описания созданных сущностей для включения dashboard - создан файл dashboard.yml
+
+Для себя
+kubectl Cheat Sheet
+https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+
+Deploy and Access the Kubernetes Dashboard
+https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
+
+terraform yandex_kubernetes_cluster
+https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs/data-sources/datasource_kubernetes_cluster
+
+Создание кластера Managed Service for Kubernetes
+https://cloud.yandex.ru/docs/managed-kubernetes/operations/kubernetes-cluster/kubernetes-cluster-create
+
+При старте Kubernetes кластер имеет следующие namespace:
+default
+kube-system
+kube-public
+kubernetes-dashboard
+
+Список команд
+```
+minikube start
+kubectl get nodes
+cat ~/.kube/config
+kubeclt config current-context
+kubectl config get-contexts
+kubectl apply -f ui-deployment.yml
+kubectl apply -f .
+kubectl delete -f .
+kubectl get deployment
+kubectl get pods --selector component=ui
+kubectl describe pods comment-7b69f8cd56-5v4l9
+kubectl logs -f my-pod
+kubectl port-forward <pod-name> 8080:9292
+
+kubectl describe service comment | grep Endpoints
+kubectl exec -ti <pod-name> nslookup comment
+
+minikube service ui
+minikube service list
+minikube ssh
+
+kubectl get all -n kube-system --selector k8s-app=kubernetes-dashboard
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+kubectl apply -f dashboard-adminuser.yaml
+kubectl proxy
+http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/workloads?namespace=default
+kubectl -n kubernetes-dashboard create token admin-user
+
+kubectl apply -n=dev -n=kubernetes-dashboard -f .
+minikube service ui -n dev
+
+yc managed-kubernetes cluster list
+yc managed-kubernetes cluster get-credentials otus-k8s --external
+kubectl cluster-info --kubeconfig /home/sergey/.kube/config
+kubectl config current-context
+
+kubectl apply -f ./kubernetes/reddit/dev-namespace.yml
+kubectl apply -f ./kubernetes/reddit/ -n dev
+kubectl apply -f . -n dev
+kubectl get nodes -o wide
+kubectl describe service ui -n dev | grep NodePort
+```
+
+Лекция 29 Основные модели безопасности и контроллеры в Kubernetes
+Admission controllers
+https://editor.networkpolicy.io - редактирование правил для сети
+Service mesh - например, istio на уровне L7, обратный прокси, работающий через апи
+syft nginx:1.14 - анализ образа
+kube-hunter - аудит кластера
+
+Лекция 28 Введение в Kubernetes #2
+Деплоймент создает разные реплика-сеты, которые уже создают поды
+pv, pvc
+
+Список команд
+```
+minikube ssh
+ps auxf
+```
+
 ДЗ 27 Введение в Kubernetes #1
 1. Основное задание
 2. Задания со *
@@ -97,6 +402,17 @@ cd ../terraform; terraform destroy -auto-approve; terraform apply -auto-approve;
 Pod - группа контейнеров
 Node - машина
 Один Pod - один IP
+Компоненты на мастере
+- etcd
+- api-server
+- controller-manager
+- scheduler
+
+На всех нодах
+- kubelet
+- kube-proxy
+
+Liveness probe, readyness probe, startup probe
 
 Лекция 26 Контейнерная оркестрация
 Docker swarm, Hashicorp Nomad, Apache Mesos, k8s
