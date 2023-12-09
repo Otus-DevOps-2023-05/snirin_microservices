@@ -28,7 +28,7 @@ resource "yandex_kubernetes_cluster" "k8s" {
   name = "otus-k8s"
   network_id = yandex_vpc_network.my_network.id
   master {
-    version = "1.28"
+    version = "1.25"
     zonal {
       zone      = yandex_vpc_subnet.my_subnet.zone
       subnet_id = yandex_vpc_subnet.my_subnet.id
@@ -46,7 +46,7 @@ resource "yandex_kubernetes_cluster" "k8s" {
 resource "yandex_kubernetes_node_group" "my_node_group" {
   cluster_id  = yandex_kubernetes_cluster.k8s.id
   name        = "m-node-group"
-  version     = "1.28"
+  version     = "1.25"
 
   instance_template {
     platform_id = "standard-v2"
