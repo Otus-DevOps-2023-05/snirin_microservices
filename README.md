@@ -25,11 +25,10 @@ kubectl top pods
 
 ДЗ 31 Интеграция Kubernetes в GitlabCI
 Что сделано
-1. Основное задание
-2. Задание со *
+1. Установка приложение через Helm
+   Развернуть gitlab по инструкции не удалось
 
 Для себя
-
 Список литературы и статей:
 - [Менеджер пакетов для Kubernetes](https://helm.sh/ru/)
 - [Setup a Kubernetes Cluster](https://istio.io/v1.7/docs/examples/microservices-istio/setup-kubernetes-cluster/)
